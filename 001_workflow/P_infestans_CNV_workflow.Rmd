@@ -60,7 +60,10 @@ Output includes the file `gene_ploidy.csv`.
 This is a sample by gene matrix containing a copy number call for each gene in each sample.
 
 
+## Allele balance and average read depth
 
-
+```
+ab_ard/ab_ard.Rmd
+```
 
 
