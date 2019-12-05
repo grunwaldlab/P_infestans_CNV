@@ -40,9 +40,13 @@ Among the outputs are two files (per sample) written to `./peaks/` that include 
 ## Peak processing
 
 
+```
+peak_proc/peak_cat.R
+```
 
-
-
+This file processes the peaks from `../proc_gvcf`.
+It also needs as input `pinf_ref/pinf_ref_wins.csv`.
+The resulting output includes: pinf_freq_wins.csv, and pinf_cnts_wins.csv
 
 
 
