@@ -68,7 +68,7 @@ cnv_vcf/cnv_vcf.Rmd
 
 This script combines several forms of data into one "VCF-like" file.
 Some data was published by other groups during our project so we combine this data with our previous data.
-
+The result is the file "pitg_cnv.vcf.gz".
 
 
 

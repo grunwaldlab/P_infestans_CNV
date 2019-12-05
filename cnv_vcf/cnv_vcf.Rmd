@@ -32,7 +32,6 @@ covs <- read.table("../raffaele2010/proc_pu/gene_coverage.csv", header = TRUE, s
 boc <- covs[,grep("1x.cov", colnames(covs))]
 ard <- covs[,grep("_cov.sum", colnames(covs))]
 
-# cbind
 covs <- read.table("../martin2013/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
 boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
 ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
@@ -277,10 +276,9 @@ zsc <- sweep(zsc, MARGIN = 2, STATS = mm$sigma, FUN = "/")
 
 ```{r}
 apply(boc, MARGIN = 2, range)
-apply(alb[,-c(4, 29)], MARGIN = 2, range, na.rm = TRUE)
-apply(alb[,-c(4, 29)], MARGIN = 2, min, na.rm = TRUE)
-apply(alb[,-c(4, 29)], MARGIN = 2, min, na.rm = TRUE)
-apply(alb[,-c(4, 29)], MARGIN = 2, min, na.rm = TRUE)
+# apply(alb[,-c(4, 29)], MARGIN = 2, range, na.rm = TRUE)
+# apply(alb[,-c(4, 29)], MARGIN = 2, min, na.rm = TRUE)
+
 colnames(alb)[apply(alb, MARGIN = 2, function(x){sum(is.na(x))}) == 18179]
 apply(alb[,grep("^PIC99167$|^KM177497$", colnames(alb), invert = TRUE)], MARGIN = 2, min, na.rm = TRUE)
 apply(abp[,grep("^PIC99167$|^KM177497$", colnames(alb), invert = TRUE)], MARGIN = 2, range, na.rm = TRUE)
