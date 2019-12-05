@@ -49,6 +49,11 @@ It also needs as input `pinf_ref/pinf_ref_wins.csv`.
 The resulting output includes: pinf_freq_wins.csv, and pinf_cnts_wins.csv
 
 
+## Genic CNV
+
+```
+gene_to_ploid/gene_to_ploid.R
+```
 
 
 
