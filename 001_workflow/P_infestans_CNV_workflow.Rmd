@@ -1,0 +1,50 @@
+---
+title: "P_infestans_CNV_workflow"
+author: "Brian J. Knaus"
+date: "12/5/2019"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+
+
+This project included many files that were organized into many directories.
+This is an attempt to document the project workflow throughout the directories.
+
+
+## *.gvcf.gz processing
+
+
+```
+proc_gvcf/proc_gvcf.R
+```
+
+This script inputs files from the directory `gvcf/` as a starting point of the project.
+This directory contained over 25 GB of data.
+GitHub [presently recommends repositories be kept under 1 GB](https://help.github.com/en/github/managing-large-files/what-is-my-disk-quota).
+So you will have to recreate these files.
+In order to recreate these you will have to access the sequences from the SRA, map the to the T30-4 reference, and recreate the gvcf files.
+
+
+This script processes the `.gvcf` files to infer peaks of allele balance.
+Among the outputs are two files (per sample) written to `./peaks/` that include the estimate of the peaks and the counts of heterozygous positions in each window.
+
+
+## Peak processing
+
+
+
+
+
+
+
+
+
+
