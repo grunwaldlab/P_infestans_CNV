@@ -28,7 +28,7 @@ proc_gvcf/proc_gvcf.R
 
 This script inputs files from the directory `gvcf/` as a starting point of the project.
 This directory contained over 25 GB of data.
-GitHub [presently recommends repositories be kept under 1 GB](https://help.github.com/en/github/managing-large-files/what-is-my-disk-quota).
+GitHub [presently recommends repositories be kept under 1 GB](https://help.github.com/en/github/managing-large-files/what-is-my-disk-quota) (accessed 2019-12-05).
 So you will have to recreate these files.
 In order to recreate these you will have to access the sequences from the SRA, map the to the T30-4 reference, and recreate the gvcf files.
 
@@ -54,6 +54,13 @@ The resulting output includes: pinf_freq_wins.csv, and pinf_cnts_wins.csv
 ```
 gene_to_ploid/gene_to_ploid.R
 ```
+
+This script takes our processed peak information and uses it to call a copy number for each gene.
+Output includes the file `gene_ploidy.csv`.
+This is a sample by gene matrix containing a copy number call for each gene in each sample.
+
+
+
 
 
 

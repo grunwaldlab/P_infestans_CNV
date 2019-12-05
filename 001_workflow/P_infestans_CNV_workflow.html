@@ -384,6 +384,7 @@ $(document).ready(function () {
 <ul>
 <li><a href="#gvcf.gz-processing">*.gvcf.gz processing</a></li>
 <li><a href="#peak-processing">Peak processing</a></li>
+<li><a href="#genic-cnv">Genic CNV</a></li>
 </ul>
 </div>
 
@@ -392,11 +393,18 @@ $(document).ready(function () {
 <div id="gvcf.gz-processing" class="section level2">
 <h2>*.gvcf.gz processing</h2>
 <pre><code>proc_gvcf/proc_gvcf.R</code></pre>
-<p>This script inputs files from the directory <code>gvcf/</code> as a starting point of the project. This directory contained over 25 GB of data. GitHub <a href="https://help.github.com/en/github/managing-large-files/what-is-my-disk-quota">presently recommends repositories be kept under 1 GB</a>. So you will have to recreate these files. In order to recreate these you will have to access the sequences from the SRA, map the to the T30-4 reference, and recreate the gvcf files.</p>
+<p>This script inputs files from the directory <code>gvcf/</code> as a starting point of the project. This directory contained over 25 GB of data. GitHub <a href="https://help.github.com/en/github/managing-large-files/what-is-my-disk-quota">presently recommends repositories be kept under 1 GB</a> (accessed 2019-12-05). So you will have to recreate these files. In order to recreate these you will have to access the sequences from the SRA, map the to the T30-4 reference, and recreate the gvcf files.</p>
 <p>This script processes the <code>.gvcf</code> files to infer peaks of allele balance. Among the outputs are two files (per sample) written to <code>./peaks/</code> that include the estimate of the peaks and the counts of heterozygous positions in each window.</p>
 </div>
 <div id="peak-processing" class="section level2">
 <h2>Peak processing</h2>
+<pre><code>peak_proc/peak_cat.R</code></pre>
+<p>This file processes the peaks from <code>../proc_gvcf</code>. It also needs as input <code>pinf_ref/pinf_ref_wins.csv</code>. The resulting output includes: pinf_freq_wins.csv, and pinf_cnts_wins.csv</p>
+</div>
+<div id="genic-cnv" class="section level2">
+<h2>Genic CNV</h2>
+<pre><code>gene_to_ploid/gene_to_ploid.R</code></pre>
+<p>This script takes our processed peak information and uses it to call a copy number for each gene. Output includes the file <code>gene_ploidy.csv</code>. This is a sample by gene matrix containing a copy number call for each gene in each sample.</p>
 </div>
 
 
