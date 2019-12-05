@@ -60,10 +60,15 @@ Output includes the file `gene_ploidy.csv`.
 This is a sample by gene matrix containing a copy number call for each gene in each sample.
 
 
-## Allele balance and average read depth
+## CNV VCF
 
 ```
-ab_ard/ab_ard.Rmd
+cnv_vcf/cnv_vcf.Rmd
 ```
+
+This script combines several forms of data into one "VCF-like" file.
+Some data was published by other groups during our project so we combine this data with our previous data.
+
+
 
 

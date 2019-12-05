@@ -1,0 +1,382 @@
+---
+title: "CNV VCF"
+author: "Brian J. Knaus"
+date: "January 25, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background
+
+We now have several pieces of information that we can use to address the question of copy number variation.
+
+* BOC - breadth of coverage
+* ALB - allele balance
+* ABP - allele balance ploidy
+* ARD - average read depth
+* AARD - (GC) adjusted average read depth
+* ZSC - z-score for adjusted average read depth
+
+here we assemble this information into one file.
+
+
+## BOC and ARD
+
+
+```{r}
+# Initialize
+covs <- read.table("../raffaele2010/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+boc <- covs[,grep("1x.cov", colnames(covs))]
+ard <- covs[,grep("_cov.sum", colnames(covs))]
+
+# cbind
+covs <- read.table("../martin2013/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
+ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
+
+covs <- read.table("../06_3928A/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
+ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
+
+covs <- read.table("../yoshida2013/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
+ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
+
+covs <- read.table("../yoshida2013_herb/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
+ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
+
+covs <- read.table("../martin2016/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
+ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
+
+covs <- read.table("../grun_uslineages/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
+ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
+
+# Non pinf
+covs <- read.table("../mir_ipo/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+# Manage names.
+colnames(covs)[ grep("PIC99114_cov.sum", colnames(covs)) ] <- "PIC99114b_cov.sum"
+colnames(covs)[ grep("PIC99114_1x.cov",  colnames(covs)) ] <- "PIC99114b_1x.cov"
+colnames(covs)[ grep("PIC99167_cov.sum", colnames(covs)) ] <- "PIC99167b_cov.sum"
+colnames(covs)[ grep("PIC99167_1x.cov",  colnames(covs)) ] <- "PIC99167b_1x.cov"
+boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
+ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
+
+covs <- read.table("../ppar/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+#covs <- read.table("../../ppar_bwa/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
+ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
+
+
+ncol(boc)
+ncol(ard)
+```
+
+
+We'll need the gene lengths to convert the above data into a per gene (adjusted for length) measure.
+
+
+```{r}
+#genes <- read.table("../gatk3/pitg_coverage.csv", header = TRUE, sep = ",")
+genes <- read.table("../pinf_ref/pitg_coverage.csv", header = TRUE, sep = ",")
+# Has old coverage info.
+#head(genes)
+
+sum(genes$LOCUS == rownames(boc))
+sum(genes$LOCUS == rownames(ard))
+
+boc <- sweep(boc, MARGIN = 1, STATS = genes$LENGTH, FUN = "/")
+ard <- sweep(ard, MARGIN = 1, STATS = genes$LENGTH, FUN = "/")
+```
+
+
+
+## AARD
+
+
+```{r}
+# Initialize
+aard <- read.table("../ard/raffaele2010_aard.csv", header = TRUE, sep = ",")
+
+# cbind
+tmp <- read.table("../ard/martin2013_aard.csv", header = TRUE, sep = ",")
+aard <- cbind(aard, tmp)
+
+tmp <- read.table("../ard/06_3928A_aard.csv", header = TRUE, sep = ",")
+aard <- cbind(aard, tmp)
+
+tmp <- read.table("../ard/yoshida2013_aard.csv", header = TRUE, sep = ",")
+aard <- cbind(aard, tmp)
+
+tmp <- read.table("../ard/yoshida2013_herb_aard.csv", header = TRUE, sep = ",")
+aard <- cbind(aard, tmp)
+
+tmp <- read.table("../ard/martin2016_aard.csv", header = TRUE, sep = ",")
+aard <- cbind(aard, tmp)
+
+tmp <- read.table("../ard/grun_uslineages_aard.csv", header = TRUE, sep = ",")
+aard <- cbind(aard, tmp)
+
+tmp <- read.table("../mir_ipo/ard/aard.csv", header = TRUE, sep = ",")
+colnames(tmp)[grep("PIC99114_cov.sum", colnames(tmp))] <- "PIC99114b_cov.sum"
+colnames(tmp)[grep("PIC99167_cov.sum", colnames(tmp))] <- "PIC99167b_cov.sum"
+aard <- cbind(aard, tmp)
+
+tmp <- read.table("../ard/ppar_aard.csv", header = TRUE, sep = ",")
+aard <- cbind(aard, tmp)
+
+ncol(aard)
+
+```
+
+
+
+
+## ALB and ABP
+
+
+```{r}
+
+alb <- read.table("../gene_to_ploid/gene_peak.csv", header = TRUE, sep = ",")
+abp <- read.table("../gene_to_ploid/gene_ploidy.csv", header = TRUE, sep = ",")
+
+omit <- c("X00Ip5_allele1", "X00M_410_allele1", "CBS.678.85_allele1",
+          "Ipom_1.2_allele1", "Ipom_2.4_allele1", "P3001_allele1", "PIC97136_allele1",
+          "PIC97146_allele1", "PIC97335_allele1", "PIC97442_allele1", "PIC97750_allele1",
+          "PIC97785_allele1", "Pipo5_allele1", "Pmir5_allele1")
+omit <- paste(omit, collapse = "$|^")
+omit <- paste("^", omit, "$", sep = "")
+
+# "PIC99114_allele1", "PIC99167_allele1", 
+
+alb <- alb[,grep(omit, colnames(alb), invert = TRUE)]
+abp <- abp[,grep(omit, colnames(abp), invert = TRUE)]
+
+
+alb2 <- read.table("../mir_ipo/gene_to_ploid/gene_peak.csv", header = TRUE, sep = ",")
+abp2 <- read.table("../mir_ipo/gene_to_ploid/gene_ploidy.csv", header = TRUE, sep = ",")
+
+colnames(alb2)[ grep("PIC99114_allele1", colnames(alb2)) ] <- "PIC99114b_allele1"
+colnames(alb2)[ grep("PIC99167_allele1", colnames(alb2)) ] <- "PIC99167b_allele1"
+colnames(abp2)[ grep("PIC99114_allele1", colnames(abp2)) ] <- "PIC99114b_allele1"
+colnames(abp2)[ grep("PIC99167_allele1", colnames(abp2)) ] <- "PIC99167b_allele1"
+
+#colnames(alb2)
+#colnames(abp2)
+
+alb <- cbind(alb, alb2)
+abp <- cbind(abp, abp2)
+
+ncol(alb)
+ncol(abp)
+```
+
+
+## Standardize rows and columns
+
+
+
+```{r}
+colnames(boc) <- sub("_1x.cov$", "", colnames(boc))
+colnames(ard) <- sub("_cov.sum$", "", colnames(ard))
+colnames(aard) <- sub("_cov.sum$", "", colnames(aard))
+colnames(alb) <- sub("_allele1", "", colnames(alb))
+colnames(abp) <- sub("_allele1", "", colnames(abp))
+
+
+sum(colnames(boc) %in% colnames(ard))
+sum(colnames(boc) %in% colnames(aard))
+sum(colnames(boc) %in% colnames(alb))
+sum(colnames(boc) %in% colnames(abp))
+sum(colnames(alb) %in% colnames(abp))
+
+#colnames(boc)[ !colnames(boc) %in% colnames(abp) ]
+#grep("PIC99189", colnames(alb), value = TRUE)
+#grep("PIC99189", colnames(abp), value = TRUE)
+#grep("30", colnames(abp), value = T )
+#grep("30", colnames(alb), value = T )
+
+ard <- ard[,colnames(boc)]
+aard <- aard[,colnames(boc)]
+alb <- alb[,colnames(boc)]
+abp <- abp[,colnames(boc)]
+
+
+sum(rownames(boc) == rownames(ard))
+sum(rownames(boc) == rownames(aard))
+sum(rownames(boc) == rownames(alb))
+sum(rownames(boc) == rownames(abp))
+
+```
+
+
+
+## Z-score
+
+Combine mixture model parameters.
+
+
+```{r}
+
+mm <- read.table("../ab_ard/mixture_model_parameters.csv", header = TRUE, sep = ",")
+
+
+omit <- c("00Ip5", "00M", "CBS.678.85", "Ipom", "Ipom.1", "P3001", "PIC97136",
+          "PIC97146", "PIC97335", "PIC97442", "PIC97750", "PIC97785", "Pipo5",
+          "Pmir5", "PIC99114", "PIC99167")
+
+omit <- paste(omit, collapse = "$|^")
+omit <- paste("^", omit, "$", sep = "")
+
+#grep(omit, rownames(mm), value = TRUE)
+
+mm <- mm[grep(omit, rownames(mm), invert = TRUE),]
+
+rownames(mm)[grep("PIC99114.1", rownames(mm))] <- "PIC99114"
+rownames(mm)[grep("PIC99167.1", rownames(mm))] <- "PIC99167"
+
+
+mm2 <- read.table("../mir_ipo/ard/mixture_model_parameters.csv", header = TRUE, sep = ",")
+
+rownames(mm2)[grep("PIC99114", rownames(mm2))] <- "PIC99114b"
+rownames(mm2)[grep("PIC99167", rownames(mm2))] <- "PIC99167b"
+
+mm <- rbind(mm, mm2)
+
+rownames(mm)[ grep("90128", rownames(mm)) ]    <- "X90128"
+rownames(mm)[ grep("06_3928A", rownames(mm)) ] <- "X06_3928A"
+rownames(mm)[ grep("00Ip5", rownames(mm)) ]    <- "X00Ip5"
+rownames(mm)[ grep("00M_410", rownames(mm)) ] <- "X00M_410"
+
+#colnames(boc)[ !colnames(boc) %in% rownames(mm) ]
+
+sum(colnames(boc) %in% rownames(mm))
+
+mm <- mm[colnames(boc),]
+
+```
+
+
+Calculate the z-score.
+
+
+```{r}
+zsc <- sweep(aard, MARGIN = 2, STATS = mm$mu, FUN = "-")
+zsc <- sweep(zsc, MARGIN = 2, STATS = mm$sigma, FUN = "/")
+```
+
+
+
+## Sanity check
+
+
+```{r}
+apply(boc, MARGIN = 2, range)
+apply(alb[,-c(4, 29)], MARGIN = 2, range, na.rm = TRUE)
+apply(alb[,-c(4, 29)], MARGIN = 2, min, na.rm = TRUE)
+apply(alb[,-c(4, 29)], MARGIN = 2, min, na.rm = TRUE)
+apply(alb[,-c(4, 29)], MARGIN = 2, min, na.rm = TRUE)
+colnames(alb)[apply(alb, MARGIN = 2, function(x){sum(is.na(x))}) == 18179]
+apply(alb[,grep("^PIC99167$|^KM177497$", colnames(alb), invert = TRUE)], MARGIN = 2, min, na.rm = TRUE)
+apply(abp[,grep("^PIC99167$|^KM177497$", colnames(alb), invert = TRUE)], MARGIN = 2, range, na.rm = TRUE)
+```
+
+
+
+
+
+## Paste
+
+[Paste matrices together](http://stackoverflow.com/a/6415225)
+
+
+```{r}
+#boc <- as.matrix(boc, trim = TRUE)
+boc <- sapply(boc, format, trim = TRUE)
+#alb <- as.matrix(alb, trim = TRUE)
+alb <- sapply(alb, format, trim = TRUE)
+#abp <- as.matrix(abp, trim = TRUE)
+abp <- sapply(abp, format, trim = TRUE)
+#ard <- as.matrix(ard, trim = TRUE)
+ard <- sapply(ard, format, trim = TRUE)
+#aard <- as.matrix(aard, trim = TRUE)
+aard <- sapply(aard, format, trim = TRUE)
+#zsc <- as.matrix(zsc, trim = TRUE)
+zsc <- sapply(zsc, format, trim = TRUE)
+```
+
+
+## Convert R NA to VCF '.'
+
+
+```{r}
+boc[is.na(boc)] <- "."
+alb[is.na(alb)] <- "."
+abp[is.na(abp)] <- "."
+ard[is.na(ard)] <- "."
+aard[is.na(aard)] <- "."
+zsc[is.na(zsc)] <- "."
+
+boc[boc == "NA"] <- "."
+alb[alb == "NA"] <- "."
+abp[abp == "NA"] <- "."
+ard[ard == "NA"] <- "."
+aard[aard == "NA"] <- "."
+zsc[zsc == "NA"] <- "."
+
+```
+
+
+```{r}
+gt <- matrix( paste(boc, alb, abp, ard, aard, zsc, sep=":"), 
+              nrow=nrow(boc), dimnames=dimnames(boc) )
+
+gt <- cbind(rep("BOC:ALB:ABP:ARD:AARD:ZSC", times = nrow(gt)), gt)
+colnames(gt)[1] <- "FORMAT"
+
+gt[1:4, 1:3]
+```
+
+
+```{r}
+
+fix <- cbind(as.character(genes$CHROM), paste(genes$START, genes$STOP, sep = "-"), as.character(genes$LOCUS))
+fix <- cbind(fix, rep(NA, times= nrow(fix)))
+fix <- cbind(fix, rep(NA, times= nrow(fix)))
+fix <- cbind(fix, rep(NA, times= nrow(fix)))
+fix <- cbind(fix, rep(NA, times= nrow(fix)))
+fix <- cbind(fix, paste("STRAND=", genes$STRAND, sep = ""))
+colnames(fix) <- c("CHROM","POS","ID","REF","ALT","QUAL","FILTER","INFO")
+```
+
+
+```{r}
+meta <- "##fileformat=VCF-like"
+meta <- c(meta, "##fileDate=20170125")
+meta <- c(meta, '##INFO=<ID=STRAND,Number=1,Type=String,Description="Strand indicator">')
+meta <- c(meta, '##FORMAT=<ID=BOC,Number=1,Type=Float,Description="Breadth of coverage">')
+meta <- c(meta, '##FORMAT=<ID=ALB,Number=1,Type=Float,Description="Allele balance">')
+meta <- c(meta, '##FORMAT=<ID=ABP,Number=1,Type=Integer,Description="Allele balance ploidy">')
+meta <- c(meta, '##FORMAT=<ID=ARD,Number=1,Type=Float,Description="Average read depth">')
+meta <- c(meta, '##FORMAT=<ID=AARD,Number=1,Type=Float,Description="Adjusted (GC) average read depth">')
+meta <- c(meta, '##FORMAT=<ID=ZSC,Number=1,Type=Float,Description="Z-score of adjusted average read depth">')
+```
+
+
+
+```{r}
+library(vcfR)
+vcf <- new('vcfR')
+vcf@meta <- meta
+vcf@fix <- fix
+vcf@gt <- gt
+
+#write.vcf(vcf, file="pitg_cnv.vcf.gz")
+```
+
+
