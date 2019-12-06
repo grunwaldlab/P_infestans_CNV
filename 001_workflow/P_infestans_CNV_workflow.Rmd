@@ -69,6 +69,17 @@ cnv_vcf/cnv_vcf.Rmd
 This script combines several forms of data into one "VCF-like" file.
 Some data was published by other groups during our project so we combine this data with our previous data.
 The result is the file "pitg_cnv.vcf.gz".
+This is not a valid file under the VCF specification.
+But we'd been working with a lot of VCF data and this seemed like a reasonable way to organize the data.
 
+
+## Distance from expectation
+
+```
+cnv_vcf/dfeab.Rmd
+```
+
+As a non-parametric form of confidence in our CNV calls we added the distance from expectation.
+This script reads in "pitg_cnv.vcf.gz" and outputs "pitg_cnv_abpdfe.vcf.gz".
 
 

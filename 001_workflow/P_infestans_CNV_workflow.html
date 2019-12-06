@@ -385,6 +385,8 @@ $(document).ready(function () {
 <li><a href="#gvcf.gz-processing">*.gvcf.gz processing</a></li>
 <li><a href="#peak-processing">Peak processing</a></li>
 <li><a href="#genic-cnv">Genic CNV</a></li>
+<li><a href="#cnv-vcf">CNV VCF</a></li>
+<li><a href="#distance-from-expectation">Distance from expectation</a></li>
 </ul>
 </div>
 
@@ -405,6 +407,16 @@ $(document).ready(function () {
 <h2>Genic CNV</h2>
 <pre><code>gene_to_ploid/gene_to_ploid.R</code></pre>
 <p>This script takes our processed peak information and uses it to call a copy number for each gene. Output includes the file <code>gene_ploidy.csv</code>. This is a sample by gene matrix containing a copy number call for each gene in each sample.</p>
+</div>
+<div id="cnv-vcf" class="section level2">
+<h2>CNV VCF</h2>
+<pre><code>cnv_vcf/cnv_vcf.Rmd</code></pre>
+<p>This script combines several forms of data into one “VCF-like” file. Some data was published by other groups during our project so we combine this data with our previous data. The result is the file “pitg_cnv.vcf.gz”. This is not a valid file under the VCF specification. But we’d been working with a lot of VCF data and this seemed like a reasonable way to organize the data.</p>
+</div>
+<div id="distance-from-expectation" class="section level2">
+<h2>Distance from expectation</h2>
+<pre><code>cnv_vcf/dfeab.Rmd</code></pre>
+<p>As a non-parametric form of confidence in our CNV calls we added the distance from expectation. This script reads in “pitg_cnv.vcf.gz” and outputs “pitg_cnv_abpdfe.vcf.gz”.</p>
 </div>
 
 
