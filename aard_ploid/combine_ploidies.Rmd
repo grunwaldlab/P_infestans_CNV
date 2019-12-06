@@ -1,0 +1,67 @@
+---
+title: "Combine ploidies"
+author: "Brian J. Knaus"
+date: "March 1, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r, results='hide'}
+library(vcfR)
+vcf <- read.vcfR("../cnv_vcf/pitg_cnv_abpdfe.vcf.gz", checkFile = FALSE)
+vcf2 <- read.vcfR("pitg_cnv_aardploid_2n.vcf.gz", checkFile = FALSE)
+vcf3 <- read.vcfR("pitg_cnv_aardploid_3n.vcf.gz", checkFile = FALSE)
+```
+
+
+```{r}
+FORMAT <- vcf2@gt[,1]
+
+gt2 <- vcf2@gt[,-1]
+gt3 <- vcf3@gt[,-1]
+
+gt2 <- cbind(gt2, gt3)
+
+myRegex <- paste(colnames(gt2), collapse="$|^")
+myRegex <- paste("^", myRegex, "$", sep = "")
+
+vcf@gt <- vcf@gt[,grep(myRegex, colnames(vcf@gt), invert = TRUE)]
+
+vcf@gt[1,1]
+FORMAT[1]
+
+
+vcf@gt[,-1] <- paste(vcf@gt[,-1], ":.:.:.", sep = "")
+vcf@gt[,1] <- FORMAT
+vcf@gt <- cbind(vcf@gt, gt2)
+
+```
+
+
+## Meta
+
+
+```{r}
+queryMETA(vcf)
+queryMETA(vcf2)
+
+vcf@meta <- vcf2@meta
+```
+
+
+
+```{r}
+vcf.name <- paste("pitg_cnv_", gsub("-", "", Sys.Date()), ".vcf.gz", sep = "")
+vcf
+#write.vcf(vcf, file = vcf.name)
+```
+
+
+
+
+

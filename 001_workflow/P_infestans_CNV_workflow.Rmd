@@ -93,3 +93,15 @@ aard_ploid/aard_trips.Rmd
 These scripts use (G/C) adjusted average read depth (AARD) to set a base ploid for individuals that appear primarily diploid or triploid.
 They create the files "pitg_cnv_abpdfe_2n.vcf.gz" and "pitg_cnv_abpdfe_3n.vcf.gz".
 
+
+## Ploidy calls to one file
+
+```
+aard_ploid/combine_ploides.Rmd
+```
+
+This script combines the ploidy files into one file.
+It creates the file "pitg_cnv_```Sys.Date()```.vcf.gz".
+
+
+

@@ -388,6 +388,7 @@ $(document).ready(function () {
 <li><a href="#cnv-vcf">CNV VCF</a></li>
 <li><a href="#distance-from-expectation">Distance from expectation</a></li>
 <li><a href="#aard">AARD</a></li>
+<li><a href="#ploidy-calls-to-one-file">Ploidy calls to one file</a></li>
 </ul>
 </div>
 
@@ -424,6 +425,11 @@ $(document).ready(function () {
 <pre><code>aard_ploid/aard_dips.Rmd
 aard_ploid/aard_trips.Rmd</code></pre>
 <p>These scripts use (G/C) adjusted average read depth (AARD) to set a base ploid for individuals that appear primarily diploid or triploid. They create the files “pitg_cnv_abpdfe_2n.vcf.gz” and “pitg_cnv_abpdfe_3n.vcf.gz”.</p>
+</div>
+<div id="ploidy-calls-to-one-file" class="section level2">
+<h2>Ploidy calls to one file</h2>
+<pre><code>aard_ploid/combine_ploides.Rmd</code></pre>
+<p>This script combines the ploidy files into one file. It creates the file “pitg_cnv_<code>Sys.Date()</code>.vcf.gz”.</p>
 </div>
 
 
