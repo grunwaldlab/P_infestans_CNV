@@ -1,0 +1,198 @@
+---
+title: "AARD_Dips"
+author: "Brian J. Knaus"
+date: "February 16, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = 'center')
+knitr::opts_chunk$set(fig.width = 12)
+knitr::opts_chunk$set(fig.height = 6)
+```
+
+
+## Mixture model data
+
+
+```{r}
+mm <- read.table("../ab_ard/mixture_model_parameters.csv", header=T, sep=",")
+head(mm)
+```
+
+
+## Subset to diploid >= 60%
+
+
+```{r}
+samps <- c("FORMAT", "IN2009T1", "Pi1889", "P17777", "NL07434", "P10127", "M.0182896", "P3683", "P8140", "P8144", "PIC97207", "PIC97605", "PIC97630", "H1306_1", "H1306_2", "H1306_3", "US100006", "PIC97750")
+mm <- mm[samps[-1],]
+```
+
+
+## Create threshold matrix
+
+
+```{r}
+thresh <- matrix(ncol = length(samps)-1, nrow = 5)
+colnames(thresh) <- samps[-1]
+
+thresh[1,] <- 0.25 * mm$mu
+thresh[2,] <- 0.75 * mm$mu
+thresh[3,] <- 1.25 * mm$mu
+thresh[4,] <- 2.75 * mm$mu
+thresh[5,] <- 2.25 * mm$mu
+```
+
+
+## VCF data
+
+
+
+```{r, results='hide'}
+library(vcfR)
+#
+vcf <- read.vcfR("../cnv_vcf/pitg_cnv_abpdfe.vcf.gz", checkFile = FALSE)
+```
+
+
+```{r}
+vcf@gt <- vcf@gt[,samps]
+vcf <- vcf[,samps]
+vcf
+```
+
+
+## AARD
+
+
+```{r}
+aard <- extract.gt(vcf, element = "AARD", as.numeric = TRUE)
+colnames(aard) == colnames(thresh)
+```
+
+## New data structure
+
+
+```{r}
+ploid <- matrix(ncol = ncol(aard), nrow = nrow(aard))
+dimnames(ploid) <- dimnames(aard)
+```
+
+
+## Call ploidy
+
+
+```{r}
+
+for(i in 1:ncol(aard)){
+  ploid[,i][ aard[,i] <  thresh[1,i] ] <- 0
+  ploid[,i][ aard[,i] >= thresh[1,i] & aard[,i] < thresh[2,i] ] <- 1
+  ploid[,i][ aard[,i] >= thresh[2,i] & aard[,i] < thresh[3,i] ] <- 2
+  ploid[,i][ aard[,i] >= thresh[3,i] & aard[,i] < thresh[4,i] ] <- 3
+  ploid[,i][ aard[,i] >= thresh[4,i] & aard[,i] < thresh[5,i] ] <- 4
+  ploid[,i][ aard[,i] >= thresh[5,i] ] <- 5
+}
+
+apply(ploid, MARGIN = 2, table)
+```
+
+
+## Confidence
+
+
+```{r}
+conf <- matrix(ncol = ncol(aard), nrow = nrow(aard))
+dimnames(conf) <- dimnames(aard)
+```
+
+
+```{r}
+subs <-  ploid/2
+conf <- sweep(subs, MARGIN = 2, STATS = mm$mu, FUN = "*")
+conf <- abs(aard - conf)
+conf <- sweep(conf, MARGIN = 2, STATS = (thresh[2,] - thresh[1,])/2, FUN = "/")
+
+#hist(conf[,1])
+#
+heatmap.bp(conf[1:1000,], rlabels = F)
+```
+
+
+## Update VCF
+
+
+```{r}
+gt <- matrix( paste(vcf@gt[,-1], ploid, conf, sep=":"), nrow=nrow(conf), dimnames=dimnames(conf) )
+
+vcf@gt[,1] <- paste(vcf@gt[,1], 'AARDP', 'CONF', sep=":")
+vcf@gt[,-1] <- gt
+
+vcf@meta <- c(vcf@meta, 
+  "##FORMAT=<ID=AARDP,Number=1,Type=Integer,Description=\"Ploidy based on AARD\">",
+  "##FORMAT=<ID=CONF,Number=1,Type=Float,Description=\"Confidence in AARDP where 0 is high confidence, 1 is near the threshold for rejection and above 1 was over 5N\">")
+```
+
+
+## Consensus ploid
+
+
+```{r}
+abp <- extract.gt(vcf, element = "ABP", as.numeric = TRUE)
+aardp <- extract.gt(vcf, element = "AARDP", as.numeric = TRUE)
+
+prop <- sum(abp[,1] == aardp[,1], na.rm = TRUE)/18179
+for(i in 2:ncol(abp)){
+  prop <- c(prop, sum(abp[,i] == aardp[,i], na.rm = TRUE)/18179)
+}
+
+names(prop) <- colnames(abp)
+
+barplot(prop, las = 3)
+title(main = "Consensus ploid genes")
+abline(h=0.5, lty = 3)
+
+#heatmap.bp(abp[1:2000,] == aardp[1:2000,], rlabels = FALSE)
+```
+
+
+## Consensus ploid 
+
+
+```{r}
+pld <- matrix(ncol = ncol(abp), nrow = nrow(abp))
+dimnames(pld) <- dimnames(abp)
+#
+pld[ abs(aardp - abp) == 0 & !is.na(aardp) & !is.na(abp) ] <- aardp[ abs(aardp - abp) == 0 & !is.na(aardp) & !is.na(abp) ]
+#pld[ abs(aardp - abp) <= 1 ] <- aardp[ abs(aardp - abp) == 0 ]
+pld[ is.na(abp) ] <- aardp[ is.na(abp) ]
+```
+
+
+## Update VCF
+
+
+```{r}
+apply(pld, MARGIN = 2, table, useNA = "always")
+pld[ is.na(pld) ] <- "."
+
+gt <- extract.gt(vcf, element = 'GT')
+gt <- matrix( paste(vcf@gt[,-1], pld, sep=":"), nrow=nrow(gt), dimnames=dimnames(gt) )
+
+vcf@gt[,1] <- paste(vcf@gt[,1], 'CNSP', sep=":")
+vcf@gt[,-1] <- gt
+
+vcf@meta <- c(vcf@meta, "##FORMAT=<ID=CNSP,Number=1,Type=Integer,Description=\"Consensus ploidy where abs(aardp - abp) <= 1 and is.na(abp) are set to aardp\">")
+vcf
+```
+
+
+# Write VCF
+
+
+```{r}
+#write.vcf(vcf, file = "pitg_cnv_aardploid_2n.vcf.gz")
+```
+
+

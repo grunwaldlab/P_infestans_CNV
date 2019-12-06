@@ -83,3 +83,13 @@ As a non-parametric form of confidence in our CNV calls we added the distance fr
 This script reads in "pitg_cnv.vcf.gz" and outputs "pitg_cnv_abpdfe.vcf.gz".
 
 
+## AARD
+
+```
+aard_ploid/aard_dips.Rmd
+aard_ploid/aard_trips.Rmd
+```
+
+These scripts use (G/C) adjusted average read depth (AARD) to set a base ploid for individuals that appear primarily diploid or triploid.
+They create the files "pitg_cnv_abpdfe_2n.vcf.gz" and "pitg_cnv_abpdfe_3n.vcf.gz".
+
