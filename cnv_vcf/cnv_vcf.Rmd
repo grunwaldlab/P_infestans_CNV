@@ -29,35 +29,43 @@ here we assemble this information into one file.
 ```{r}
 # Initialize
 covs <- read.table("../raffaele2010/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+ncol(covs)/3 == 6
 boc <- covs[,grep("1x.cov", colnames(covs))]
 ard <- covs[,grep("_cov.sum", colnames(covs))]
 
 covs <- read.table("../martin2013/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+ncol(covs)/3 == 8
 boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
 ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
 
 covs <- read.table("../06_3928A/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+ncol(covs)/3 == 2
 boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
 ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
 
 covs <- read.table("../yoshida2013/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+ncol(covs)/3 == 12
 boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
 ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
 
 covs <- read.table("../yoshida2013_herb/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+ncol(covs)/3 == 16
 boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
 ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
 
 covs <- read.table("../martin2016/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+ncol(covs)/3 == 35
 boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
 ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
 
 covs <- read.table("../grun_uslineages/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+ncol(covs)/3 == 8
 boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
 ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
 
 # Non pinf
 covs <- read.table("../mir_ipo/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+ncol(covs)/3 == 16
 # Manage names.
 colnames(covs)[ grep("PIC99114_cov.sum", colnames(covs)) ] <- "PIC99114b_cov.sum"
 colnames(covs)[ grep("PIC99114_1x.cov",  colnames(covs)) ] <- "PIC99114b_1x.cov"
@@ -67,6 +75,7 @@ boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
 ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])
 
 covs <- read.table("../ppar/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
+ncol(covs)/3 == 5
 #covs <- read.table("../../ppar_bwa/proc_pu/gene_coverage.csv", header = TRUE, sep = ",")
 boc <- cbind(boc, covs[,grep("1x.cov", colnames(covs))])
 ard <- cbind(ard, covs[,grep("_cov.sum", colnames(covs))])

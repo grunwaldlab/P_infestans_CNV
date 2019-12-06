@@ -399,36 +399,52 @@ $(document).ready(function () {
 <h2>BOC and ARD</h2>
 <pre class="r"><code># Initialize
 covs &lt;- read.table(&quot;../raffaele2010/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
-boc &lt;- covs[,grep(&quot;1x.cov&quot;, colnames(covs))]
+ncol(covs)/3 == 6</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>boc &lt;- covs[,grep(&quot;1x.cov&quot;, colnames(covs))]
 ard &lt;- covs[,grep(&quot;_cov.sum&quot;, colnames(covs))]
 
 covs &lt;- read.table(&quot;../martin2013/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
-boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
+ncol(covs)/3 == 8</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
 ard &lt;- cbind(ard, covs[,grep(&quot;_cov.sum&quot;, colnames(covs))])
 
 covs &lt;- read.table(&quot;../06_3928A/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
-boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
+ncol(covs)/3 == 2</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
 ard &lt;- cbind(ard, covs[,grep(&quot;_cov.sum&quot;, colnames(covs))])
 
 covs &lt;- read.table(&quot;../yoshida2013/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
-boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
+ncol(covs)/3 == 12</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
 ard &lt;- cbind(ard, covs[,grep(&quot;_cov.sum&quot;, colnames(covs))])
 
 covs &lt;- read.table(&quot;../yoshida2013_herb/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
-boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
+ncol(covs)/3 == 16</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
 ard &lt;- cbind(ard, covs[,grep(&quot;_cov.sum&quot;, colnames(covs))])
 
 covs &lt;- read.table(&quot;../martin2016/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
-boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
+ncol(covs)/3 == 35</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
 ard &lt;- cbind(ard, covs[,grep(&quot;_cov.sum&quot;, colnames(covs))])
 
 covs &lt;- read.table(&quot;../grun_uslineages/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
-boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
+ncol(covs)/3 == 8</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
 ard &lt;- cbind(ard, covs[,grep(&quot;_cov.sum&quot;, colnames(covs))])
 
 # Non pinf
 covs &lt;- read.table(&quot;../mir_ipo/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
-# Manage names.
+ncol(covs)/3 == 16</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code># Manage names.
 colnames(covs)[ grep(&quot;PIC99114_cov.sum&quot;, colnames(covs)) ] &lt;- &quot;PIC99114b_cov.sum&quot;
 colnames(covs)[ grep(&quot;PIC99114_1x.cov&quot;,  colnames(covs)) ] &lt;- &quot;PIC99114b_1x.cov&quot;
 colnames(covs)[ grep(&quot;PIC99167_cov.sum&quot;, colnames(covs)) ] &lt;- &quot;PIC99167b_cov.sum&quot;
@@ -437,15 +453,18 @@ boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
 ard &lt;- cbind(ard, covs[,grep(&quot;_cov.sum&quot;, colnames(covs))])
 
 covs &lt;- read.table(&quot;../ppar/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
-#covs &lt;- read.table(&quot;../../ppar_bwa/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
+ncol(covs)/3 == 5</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>#covs &lt;- read.table(&quot;../../ppar_bwa/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
 boc &lt;- cbind(boc, covs[,grep(&quot;1x.cov&quot;, colnames(covs))])
 ard &lt;- cbind(ard, covs[,grep(&quot;_cov.sum&quot;, colnames(covs))])
 
-
-ncol(boc)</code></pre>
-<pre><code>## [1] 114</code></pre>
+ncol(covs)</code></pre>
+<pre><code>## [1] 15</code></pre>
+<pre class="r"><code>ncol(boc)</code></pre>
+<pre><code>## [1] 108</code></pre>
 <pre class="r"><code>ncol(ard)</code></pre>
-<pre><code>## [1] 114</code></pre>
+<pre><code>## [1] 108</code></pre>
 <p>We’ll need the gene lengths to convert the above data into a per gene (adjusted for length) measure.</p>
 <pre class="r"><code>#genes &lt;- read.table(&quot;../gatk3/pitg_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
 genes &lt;- read.table(&quot;../pinf_ref/pitg_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
@@ -541,13 +560,13 @@ colnames(abp) &lt;- sub(&quot;_allele1&quot;, &quot;&quot;, colnames(abp))
 
 
 sum(colnames(boc) %in% colnames(ard))</code></pre>
-<pre><code>## [1] 114</code></pre>
+<pre><code>## [1] 108</code></pre>
 <pre class="r"><code>sum(colnames(boc) %in% colnames(aard))</code></pre>
-<pre><code>## [1] 114</code></pre>
+<pre><code>## [1] 108</code></pre>
 <pre class="r"><code>sum(colnames(boc) %in% colnames(alb))</code></pre>
-<pre><code>## [1] 114</code></pre>
+<pre><code>## [1] 108</code></pre>
 <pre class="r"><code>sum(colnames(boc) %in% colnames(abp))</code></pre>
-<pre><code>## [1] 114</code></pre>
+<pre><code>## [1] 108</code></pre>
 <pre class="r"><code>sum(colnames(alb) %in% colnames(abp))</code></pre>
 <pre><code>## [1] 108</code></pre>
 <pre class="r"><code>#colnames(boc)[ !colnames(boc) %in% colnames(abp) ]
@@ -607,11 +626,15 @@ rownames(mm)[ grep(&quot;00M_410&quot;, rownames(mm)) ] &lt;- &quot;X00M_410&quo
 #colnames(boc)[ !colnames(boc) %in% rownames(mm) ]
 
 sum(colnames(boc) %in% rownames(mm))</code></pre>
-<pre><code>## [1] 114</code></pre>
+<pre><code>## [1] 108</code></pre>
 <pre class="r"><code>mm &lt;- mm[colnames(boc),]</code></pre>
 <p>Calculate the z-score.</p>
 <pre class="r"><code>zsc &lt;- sweep(aard, MARGIN = 2, STATS = mm$mu, FUN = &quot;-&quot;)
-zsc &lt;- sweep(zsc, MARGIN = 2, STATS = mm$sigma, FUN = &quot;/&quot;)</code></pre>
+zsc &lt;- sweep(zsc, MARGIN = 2, STATS = mm$sigma, FUN = &quot;/&quot;)
+ncol(zsc)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>nrow(zsc)</code></pre>
+<pre><code>## [1] 18179</code></pre>
 </div>
 <div id="sanity-check" class="section level2">
 <h2>Sanity check</h2>
@@ -619,45 +642,42 @@ zsc &lt;- sweep(zsc, MARGIN = 2, STATS = mm$sigma, FUN = &quot;/&quot;)</code></
 <pre><code>##      X90128 F18 PIC99114 PIC99167 PIC99189     t30.4 BL2009P4 IN2009T1
 ## [1,]      0   0        0        0        0 0.1382576        0        0
 ## [2,]      1   1        1        1        1 1.0000000        1        1
-##      Pi1845A Pi1845B Pi1876 Pi1882 Pi1889 RS2009P1 BL2009P4 IN2009T1
-## [1,]       0       0      0      0      0        0        0        0
-## [2,]       1       1      1      1      1        1        1        1
-##      Pi1845A Pi1845B Pi1876 Pi1882 Pi1889 RS2009P1 DDR7602 LBUS NL07434
-## [1,]       0       0      0      0      0        0       0    0       0
-## [2,]       1       1      1      1      1        1       1    1       1
-##      P10127 P10650 P11633 P12204 P13527 P13626 P1362 P6096 P7722  KM177497
-## [1,]      0      0      0      0      0      0     0     0     0 0.0000000
-## [2,]      1      1      1      1      1      1     1     1     1 0.4548736
-##      KM177500 KM177509 KM177512 KM177513 KM177514 KM177517 KM177548
-## [1,]        0        0        0        0        0        0        0
-## [2,]        1        1        1        1        1        1        1
-##      M.0182896 M.0182897 M.0182898 M.0182900 M.0182903 M.0182904 M.0182906
-## [1,]         0 0.0000000         0         0         0 0.0000000         0
-## [2,]         1 0.5693431         1         1         1 0.7226277         1
-##      M.0182907 EC3394 Kew122 Kew123 Kew126 P10650b P13198 P13346 P13803
-## [1,]         0      0      0      0      0       0      0      0      0
-## [2,]         1      1      1      1      1       1      1      1      1
-##      P3681 P3683 P3685 P3873 P6515 P6570 P6629 P6634 P6635 P6636 P7036
-## [1,]     0     0     0     0     0     0     0     0     0     0     0
-## [2,]     1     1     1     1     1     1     1     1     1     1     1
-##      P8140 P8141 P8143 P8144 P8844 PaX PCO038 PCZ026 PCZ033 PCZ050 PCZ098
-## [1,]     0     0     0     0     0   0      0      0      0      0      0
-## [2,]     1     1     1     1     1   1      1      1      1      1      1
-##      PHU006 PIC97207 PIC97605 PIC97630 PIC98372 FL2009P4 FP.GCC H1306_1
-## [1,]      0        0        0        0        0        0      0       0
-## [2,]      1        1        1        1        1        1      1       1
-##      H1306_2 H1306_3 ND822Pi US0400009 US100006 X00Ip5 X00M_410 CBS.678.85
-## [1,]       0       0       0         0        0      0        0          0
-## [2,]       1       1       1         1        1      1        1          1
-##      Ipom_1.2 Ipom_2.4 P3001 PIC97136 PIC97146 PIC97335 PIC97442 PIC97750
-## [1,]        0        0     0        0        0        0        0        0
-## [2,]        1        1     1        1        1        1        1        1
-##      PIC97785 PIC99114b PIC99167b Pipo5 Pmir5 CJ01A1 INRA.310 P10297 P1569
-## [1,]        0         0         0     0     0      0        0      0     0
-## [2,]        1         1         1     1     1      1        1      1     1
-##      P1976
-## [1,]     0
-## [2,]     1</code></pre>
+##      Pi1845A Pi1845B Pi1876 Pi1882 Pi1889 RS2009P1 X06_3928A P17777
+## [1,]       0       0      0      0      0        0         0      0
+## [2,]       1       1      1      1      1        1         1      1
+##      DDR7602 LBUS NL07434 P10127 P10650 P11633 P12204 P13527 P13626 P1362
+## [1,]       0    0       0      0      0      0      0      0      0     0
+## [2,]       1    1       1      1      1      1      1      1      1     1
+##      P6096 P7722  KM177497 KM177500 KM177509 KM177512 KM177513 KM177514
+## [1,]     0     0 0.0000000        0        0        0        0        0
+## [2,]     1     1 0.4548736        1        1        1        1        1
+##      KM177517 KM177548 M.0182896 M.0182897 M.0182898 M.0182900 M.0182903
+## [1,]        0        0         0 0.0000000         0         0         0
+## [2,]        1        1         1 0.5693431         1         1         1
+##      M.0182904 M.0182906 M.0182907 EC3394 Kew122 Kew123 Kew126 P10650b
+## [1,] 0.0000000         0         0      0      0      0      0       0
+## [2,] 0.7226277         1         1      1      1      1      1       1
+##      P13198 P13346 P13803 P3681 P3683 P3685 P3873 P6515 P6570 P6629 P6634
+## [1,]      0      0      0     0     0     0     0     0     0     0     0
+## [2,]      1      1      1     1     1     1     1     1     1     1     1
+##      P6635 P6636 P7036 P8140 P8141 P8143 P8144 P8844 PaX PCO038 PCZ026
+## [1,]     0     0     0     0     0     0     0     0   0      0      0
+## [2,]     1     1     1     1     1     1     1     1   1      1      1
+##      PCZ033 PCZ050 PCZ098 PHU006 PIC97207 PIC97605 PIC97630 PIC98372
+## [1,]      0      0      0      0        0        0        0        0
+## [2,]      1      1      1      1        1        1        1        1
+##      FL2009P4 FP.GCC H1306_1 H1306_2 H1306_3 ND822Pi US0400009 US100006
+## [1,]        0      0       0       0       0       0         0        0
+## [2,]        1      1       1       1       1       1         1        1
+##      X00Ip5 X00M_410 CBS.678.85 Ipom_1.2 Ipom_2.4 P3001 PIC97136 PIC97146
+## [1,]      0        0          0        0        0     0        0        0
+## [2,]      1        1          1        1        1     1        1        1
+##      PIC97335 PIC97442 PIC97750 PIC97785 PIC99114b PIC99167b Pipo5 Pmir5
+## [1,]        0        0        0        0         0         0     0     0
+## [2,]        1        1        1        1         1         1     1     1
+##      CJ01A1 INRA.310 P10297 P1569 P1976
+## [1,]      0        0      0     0     0
+## [2,]      1        1      1     1     1</code></pre>
 <pre class="r"><code># apply(alb[,-c(4, 29)], MARGIN = 2, range, na.rm = TRUE)
 # apply(alb[,-c(4, 29)], MARGIN = 2, min, na.rm = TRUE)
 
@@ -668,9 +688,7 @@ colnames(alb)[apply(alb, MARGIN = 2, function(x){sum(is.na(x))}) == 18179]</code
 ##       0.49       0.49       0.49       0.49       0.49       0.49 
 ##   IN2009T1    Pi1845A    Pi1845B     Pi1876     Pi1882     Pi1889 
 ##       0.49       0.49       0.49       0.49       0.49       0.49 
-##   RS2009P1 BL2009P4.1 IN2009T1.1  Pi1845A.1  Pi1845B.1   Pi1876.1 
-##       0.49       0.49       0.49       0.49       0.49       0.49 
-##   Pi1882.1   Pi1889.1 RS2009P1.1    DDR7602       LBUS    NL07434 
+##   RS2009P1  X06_3928A     P17777    DDR7602       LBUS    NL07434 
 ##       0.49       0.49       0.49       0.49       0.49       0.49 
 ##     P10127     P10650     P11633     P12204     P13527     P13626 
 ##       0.49       0.49       0.49       0.49       0.49       0.51 
@@ -706,12 +724,9 @@ colnames(alb)[apply(alb, MARGIN = 2, function(x){sum(is.na(x))}) == 18179]</code
 <pre><code>##      X90128 F18 PIC99114 PIC99189 t30.4 BL2009P4 IN2009T1 Pi1845A Pi1845B
 ## [1,]      2   2        2        2     2        2        2       2       2
 ## [2,]      4   4        4        4     4        5        5       4       4
-##      Pi1876 Pi1882 Pi1889 RS2009P1 BL2009P4.1 IN2009T1.1 Pi1845A.1
-## [1,]      2      2      2        2          2          2         2
-## [2,]      4      4      5        5          5          5         4
-##      Pi1845B.1 Pi1876.1 Pi1882.1 Pi1889.1 RS2009P1.1 DDR7602 LBUS NL07434
-## [1,]         2        2        2        2          2       2    2       2
-## [2,]         4        4        4        5          5       5    5       5
+##      Pi1876 Pi1882 Pi1889 RS2009P1 X06_3928A P17777 DDR7602 LBUS NL07434
+## [1,]      2      2      2        2         2      2       2    2       2
+## [2,]      4      4      5        5         5      5       5    5       5
 ##      P10127 P10650 P11633 P12204 P13527 P13626 P1362 P6096 P7722 KM177500
 ## [1,]      2      2      2      2      2      2     2     2     2        2
 ## [2,]      5      5      5      5      5      5     5     5     5        5
@@ -749,6 +764,18 @@ colnames(alb)[apply(alb, MARGIN = 2, function(x){sum(is.na(x))}) == 18179]</code
 <div id="paste" class="section level2">
 <h2>Paste</h2>
 <p><a href="http://stackoverflow.com/a/6415225">Paste matrices together</a></p>
+<pre class="r"><code>ncol(boc)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(alb)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(abp)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(ard)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(aard)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(zsc)</code></pre>
+<pre><code>## [1] 108</code></pre>
 <pre class="r"><code>#boc &lt;- as.matrix(boc, trim = TRUE)
 boc &lt;- sapply(boc, format, trim = TRUE)
 #alb &lt;- as.matrix(alb, trim = TRUE)
@@ -777,6 +804,18 @@ abp[abp == &quot;NA&quot;] &lt;- &quot;.&quot;
 ard[ard == &quot;NA&quot;] &lt;- &quot;.&quot;
 aard[aard == &quot;NA&quot;] &lt;- &quot;.&quot;
 zsc[zsc == &quot;NA&quot;] &lt;- &quot;.&quot;</code></pre>
+<pre class="r"><code>ncol(boc)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(alb)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(abp)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(ard)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(aard)</code></pre>
+<pre><code>## [1] 108</code></pre>
+<pre class="r"><code>ncol(zsc)</code></pre>
+<pre><code>## [1] 108</code></pre>
 <pre class="r"><code>gt &lt;- matrix( paste(boc, alb, abp, ard, aard, zsc, sep=&quot;:&quot;), 
               nrow=nrow(boc), dimnames=dimnames(boc) )
 
@@ -799,6 +838,8 @@ gt[1:4, 1:3]</code></pre>
 ## [2,] &quot;0.5050505051:.:.:7.441077e-01:6.536149e-01:-1.193665e+00&quot;
 ## [3,] &quot;0.6389029964:.:.:1.599289e+00:1.430179e+00:-5.683968e-01&quot;
 ## [4,] &quot;0.7320777643:.:.:1.756379e+00:1.627421e+00:-4.095834e-01&quot;</code></pre>
+<pre class="r"><code>ncol(gt)</code></pre>
+<pre><code>## [1] 109</code></pre>
 <pre class="r"><code>fix &lt;- cbind(as.character(genes$CHROM), paste(genes$START, genes$STOP, sep = &quot;-&quot;), as.character(genes$LOCUS))
 fix &lt;- cbind(fix, rep(NA, times= nrow(fix)))
 fix &lt;- cbind(fix, rep(NA, times= nrow(fix)))
@@ -827,7 +868,15 @@ vcf@meta &lt;- meta
 vcf@fix &lt;- fix
 vcf@gt &lt;- gt
 
-#write.vcf(vcf, file=&quot;pitg_cnv.vcf.gz&quot;)</code></pre>
+vcf</code></pre>
+<pre><code>## ***** Object of Class vcfR *****
+## 108 samples
+## 802 CHROMs
+## 18,179 variants
+## Object size: 223.6 Mb
+## 0 percent missing data
+## *****        *****         *****</code></pre>
+<pre class="r"><code>#write.vcf(vcf, file=&quot;pitg_cnv.vcf.gz&quot;)</code></pre>
 </div>
 
 
