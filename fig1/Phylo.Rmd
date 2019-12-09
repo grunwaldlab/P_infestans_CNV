@@ -1,0 +1,66 @@
+---
+title: "Phylo"
+author: "Brian J. Knaus"
+date: "May 25, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+## Data
+
+
+```{r}
+library(ape)
+myPhy <- read.nexus("1_1375894975_NuclearData_Mesquite.nexorg")
+```
+
+
+
+## Prune
+
+
+```{r}
+myPhy <- extract.clade(myPhy, node = 93)
+myPhy <- extract.clade(myPhy, node = 83)
+myPhy <- extract.clade(myPhy, node = 24)
+myPhy <- rotate(myPhy, node = 15)
+myPhy <- rotate(myPhy, node = 17)
+myPhy <- rotate(myPhy, node = 18)
+myPhy <- rotate(myPhy, node = 19)
+```
+
+## Tip labels
+
+```{r}
+#myPhy$tip.label
+myPhy$tip.label <- sub("Phytophthora_", "P.", myPhy$tip.label)
+myPhy$tip.label <-  sub("_.+", "", myPhy$tip.label)
+myPhy$tip.label[grep("nicotiana", myPhy$tip.label)] <- "P.parasitica"
+```
+
+
+
+## Plot
+
+
+```{r}
+#pdf("martin_2014_nuc_phylo.pdf", width=3.25, height=3.25)
+par(mar=c(4,0.3,0,0.3))
+plot(myPhy, x.lim=c(0, 0.12))
+#nodelabels()
+#add.scale.bar()
+axis(side=1, at=seq(0, 0.08, by=0.02), line = 0.2)
+lines(x=c(0.11, 0.11), y=c(2,15), lwd=4)
+text(0.12, 7, "Clade1", srt=-90, cex=2)
+lines(x=c(0.1, 0.1), y=c(2,6), lwd=2)
+text(0.104, 4, "c", cex=2)
+title(xlab="Mean substitutions per site")
+#dev.off()
+
+```
+
+

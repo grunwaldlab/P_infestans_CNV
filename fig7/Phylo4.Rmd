@@ -1,0 +1,159 @@
+---
+title: "Phylo"
+author: "Brian J. Knaus"
+date: "May 25, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+
+```{r}
+library(ape)
+myPhy <- read.nexus("1_1375894975_NuclearData_Mesquite.nexorg")
+```
+
+
+## Prune
+
+
+~ Clades 6:10
+
+```{r}
+myLabs <- myPhy$tip.label
+myRegex <- "cactorum|hedraiandra|idaei|pseudotsugae|iranica|clandestina|tentaculata|infestans|andina|ipomoeae|mirabilis|phaseoli|nicotianae|quercina|ohioensis|palmivora|quercetorum|megakarya|katsurae|heveae|colocasiae|citrophthora|botryosa|meadii|capsici|mexicana|glovera|tropicalis|siskiyouensis|brasiliensis|plurivora|multivora|bisheria|multivesiculata|pseudosyringae"
+myOmit <- grep(myRegex, myLabs, value = TRUE, invert = TRUE)
+myPhy <- drop.tip(myPhy, tip = myOmit)
+```
+
+
+Clades 3 and 2, except capsici
+
+```{r}
+myLabs <- myPhy$tip.label
+myRegex <- "pseudosyringae|multivesiculata|capsicilike|siskiyouensis|tropicalis|glovera|mexicana|meadii|citrophthora|colocasiae|botryosa|bisheria|quercina|ohioensis"
+myOmit <- grep(myRegex, myLabs, value = TRUE, invert = FALSE)
+myPhy <- drop.tip(myPhy, tip = myOmit)
+```
+
+
+Clade 5
+
+```{r}
+myLabs <- myPhy$tip.label
+myRegex <- "heveae"
+myOmit <- grep(myRegex, myLabs, value = TRUE, invert = FALSE)
+myPhy <- drop.tip(myPhy, tip = myOmit)
+```
+
+
+Clade 4
+
+```{r}
+myLabs <- myPhy$tip.label
+myRegex <- "palmivora|megakarya"
+myOmit <- grep(myRegex, myLabs, value = TRUE, invert = FALSE)
+myPhy <- drop.tip(myPhy, tip = myOmit)
+```
+
+
+
+Clade 1a
+
+```{r}
+myLabs <- myPhy$tip.label
+myRegex <- "idaei|hedraiandra|cactorum"
+myOmit <- grep(myRegex, myLabs, value = TRUE, invert = FALSE)
+myPhy <- drop.tip(myPhy, tip = myOmit)
+```
+
+
+Clade 1b
+
+```{r}
+myLabs <- myPhy$tip.label
+myRegex <- "iranica|clandestina"
+myOmit <- grep(myRegex, myLabs, value = TRUE, invert = FALSE)
+myPhy <- drop.tip(myPhy, tip = myOmit)
+```
+
+
+```{r}
+myPhy$tip.label <- sub("_P\\d+", "", myPhy$tip.label)
+myPhy$tip.label <- sub("hytophthora_", ".", myPhy$tip.label)
+myPhy$tip.label <- sub("P.nicotianae", "P.parasitica", myPhy$tip.label)
+```
+
+
+Placeholders
+
+```{r}
+myPhy$tip.label <- sub("P.quercetorum", "Clade 4", myPhy$tip.label)
+myPhy$tip.label <- sub("P.katsurae", "Clade 5", myPhy$tip.label)
+myPhy$tip.label <- sub("P.pseudotsugae", "Clade 1a", myPhy$tip.label)
+myPhy$tip.label <- sub("P.tentaculata", "Clade 1b", myPhy$tip.label)
+```
+
+
+Drop placeholders
+
+```{r}
+myPhy <- drop.tip(myPhy, c(10,5,9,11))
+myPhy <- rotate(myPhy, 13)
+```
+
+
+
+
+```{r}
+plot(myPhy)
+axis(side=1)
+```
+
+
+```{r}
+tipc <- c("#b15928", "#ff7f00", "#1f78b4", "#000000", "#000000", "#6a3d9a", "#000000")
+```
+
+
+## Plot
+
+
+```{r}
+#pdf("martin_2014_nuc_phylo4.pdf", width=3.25, height=3.25)
+#pdf("martin_2014_nuc_phylo4.pdf", width=2.7, height=4.0)
+
+par(mar=c(1,0.3,0,0.1))
+par(mgp=c(3,0.5,0))
+plot(myPhy, x.lim=c(0, 0.12), tip.color = tipc)
+#nodelabels()
+add.scale.bar(x=0.01, y=2)
+text(x=0.005, y=1.6, "Mean", pos=4)
+text(x=0.005, y=1.3, "substitutions", pos=4)
+text(x=0.005, y=1.0, "per site", pos=4)
+
+#lines(x=c(0.155, 0.155), y=c(1,8), lwd=4)
+#text(0.17, 4.5, "Clade 1", srt=-90, cex=2)
+#lines(x=c(0.14, 0.14), y=c(1,5), lwd=2)
+#text(0.147, 3, "c", cex=2)
+
+#text(0.156, 11, "Clade 2", srt=-0, cex=1.4)
+#lines(x=c(0.128, 0.128), y=c(10.7,11.3), lwd=2)
+#text(0.147, 6, "b", cex=2)
+#lines(x=c(0.14, 0.14), y=c(5.5,6.5), lwd=2)
+#text(0.147, 8, "a", cex=2)
+#lines(x=c(0.14, 0.14), y=c(7.5,8.5), lwd=2)
+#axis(side=1, at=seq(0, 0.08, by=0.02), line = 0.2)
+#title(xlab="Mean substitutions per site", line=1.5)
+#
+#dev.off()
+
+par(mar=c(5,4,4,2))
+
+```
+
+
