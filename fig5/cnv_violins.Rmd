@@ -1,0 +1,165 @@
+---
+title: "CNV violins"
+author: "Brian J. Knaus"
+date: "May 4, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = "center")
+knitr::opts_chunk$set(fig.width = 12)
+knitr::opts_chunk$set(fig.height = 12)
+```
+
+Load data from three files and combine into one long form data.frame.
+Count the number of genes that were of each copy number class and each annotation with `table()`.
+
+```{r}
+load('us1.RData')
+myCounts <- as.data.frame(table(dpf$Family, dpf$CN, dpf$Sample))
+myCounts$Lineage <- "US-1"
+load('mx.RData')
+dpf <- as.data.frame(table(dpf$Family, dpf$CN, dpf$Sample))
+dpf$Lineage <- "Mexico"
+myCounts <- rbind(myCounts, dpf)
+load('sa.RData')
+dpf <- as.data.frame(table(dpf$Family, dpf$CN, dpf$Sample))
+dpf$Lineage <- "S. America"
+myCounts <- rbind(myCounts, dpf)
+colnames(myCounts)[1:4] <- c('Gene','Copy Number','Sample','Count')
+```
+
+Visualize that long form data.frame.
+
+```{r}
+head(myCounts)
+
+knitr::kable(t(table(myCounts$Lineage, myCounts$Sample)))
+```
+
+Here the magick number is 32 because we have 8 gene classes and 4 copy number calls.
+
+
+```{r}
+library(reshape2)
+library(ggplot2)
+library(RColorBrewer)
+
+
+p <- ggplot(myCounts, aes(x=`Copy Number`, y=Count, fill = `Copy Number`)) 
+p <- p + theme_bw()
+p <- p + geom_violin(adjust=1.0, scale = "width", trim=TRUE)
+p <- p + facet_grid(Gene ~ Lineage, scales="free_y")
+#p <- p + geom_dotplot(binaxis='y', stackdir='center', dotsize=1, binwidth = 2)
+#p <- p + scale_y_continuous(trans=scales::log2_trans(),  breaks=c(1, 10, 100, 800))
+p <- p + theme(legend.position="none")
+p <- p + scale_fill_manual(values = brewer.pal(n=5, name = "Dark2"))
+```
+
+
+```{r}
+#png('cnv_violins.png', width = 6.5, height = 9, units = 'in', res = 300)
+p
+#dev.off()
+```
+
+
+
+```{r}
+library(cowplot)
+cnt.l <- vector("list", length = 8)
+
+myGenes <- unique(myCounts$Gene)
+names(cnt.l) <- myGenes
+for(i in 1:length(cnt.l)){
+  cnt.l[[i]] <- myCounts[myCounts$Gene == myGenes[i],]
+}
+
+p.l <- vector("list", length = 8)
+names(p.l) <- myGenes
+for(i in 1:length(p.l)){
+  p.l[[i]] <- ggplot(cnt.l[[i]], aes(x=`Copy Number`, y=Count, fill = `Copy Number`)) 
+  p.l[[i]] <- p.l[[i]] + theme_bw()
+  p.l[[i]] <- p.l[[i]] + geom_violin(adjust=1.0, scale = "width", trim=TRUE)
+  p.l[[i]] <- p.l[[i]] + facet_grid(. ~ Lineage, scales="free_y")
+  #p <- p + geom_dotplot(binaxis='y', stackdir='center', dotsize=1, binwidth = 2)
+  p.l[[i]] <- p.l[[i]] + theme(legend.position="none")
+  p.l[[i]] <- p.l[[i]] + scale_fill_manual(values = brewer.pal(n=5, name = "Dark2"))
+}
+
+```
+
+
+```{r}
+plot_grid(plotlist = p.l, nrow = 8, label_size = 10, labels = myGenes)
+```
+
+
+## Summarize more
+
+Remove the 4X and 5X calls.
+The create a proportion based on the 2X and 3x calls.
+
+
+```{r}
+myCounts2 <- myCounts[myCounts$`Copy Number` !=5,]
+myCounts2 <- myCounts2[myCounts2$`Copy Number` !=4,]
+
+mySamples <- unique(myCounts2$Sample)
+
+i <- 1
+tmp <- myCounts2[myCounts2$Sample == mySamples[i],]
+tris <- tmp[tmp$`Copy Number` == 3,]
+tmp <- tmp[tmp$`Copy Number` == 2,]
+allCount <- tmp$Count + tris$Count
+tmp$Count <- tmp$Count/allCount
+tris$Count <- tris$Count/allCount
+#tmp$Count <- tmp$Count/tris
+#tmp$Count <- tris/tmp$Count
+myCounts3 <- rbind(tmp, tris)
+
+for(i in 2:length(mySamples)){
+  tmp <- myCounts2[myCounts2$Sample == mySamples[i],]
+  tmp$Count <- tmp$Count/sum(tmp$Count, na.rm = TRUE)
+  tris <- tmp[tmp$`Copy Number` == 3,]
+  tmp <- tmp[tmp$`Copy Number` == 2,]
+  allCount <- tmp$Count + tris$Count
+  tmp$Count <- tmp$Count/allCount
+  tris$Count <- tris$Count/allCount
+#  tmp$Count <- tmp$Count/(tmp$Count + tris$Count)
+#  tmp$Count <- tmp$Count/tris
+#  tmp$Count <- tris/tmp$Count
+  myCounts3 <- rbind(myCounts3, tmp, tris)
+}
+myCounts3$Gene <- factor(as.character(myCounts3$Gene),
+                         levels=c("Core", "Pseudogene", "RxLR", "CRN", "CAZy", "NPP1", "SCR", "Elicitin"))
+```
+
+
+```{r}
+p <- ggplot(myCounts3, aes(x=`Copy Number`, y=Count, fill = `Lineage`)) 
+p <- p + theme_bw()
+#p <- p + geom_boxplot(outlier.size = 0.4, lwd=0.2)
+p <- p + geom_boxplot(outlier.shape = NA, lwd=0.2)
+p <- p + theme(legend.position="none", panel.spacing = unit(0.1, "lines"))
+p <- p + scale_fill_manual(values = brewer.pal(n=5, name = "Dark2"))
+#p <- p + scale_x_discrete(name="", labels = "")
+#p <- p + scale_y_continuous(name="2/3 ratio")
+p <- p + scale_y_continuous(name="Fraction of Genes")
+#p <- p + geom_hline(yintercept = 1, color = '#B22222')
+p <- p + facet_grid(Lineage ~ Gene, scales="free_y")
+p <- p + scale_fill_manual(values = c("#228B22", "#FF8C00",  "#8B0000"))
+p <- p + geom_jitter(aes(alpha=99), shape=20, position=position_jitter(0.2)) + scale_shape_manual(values = 1) 
+
+```
+
+
+```{r, fig.height=6}
+#png("gene_cnv.png", width = 6.5, height = 3, units = 'in', pointsize = 12, res = 300)
+#pdf("gene_cnv.pdf", width = 6.5, height = 3)
+p
+#dev.off()
+```
+
+

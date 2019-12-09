@@ -1,0 +1,741 @@
+---
+title: "Geo CNV"
+author: "Brian J. Knaus"
+date: "May 25, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+## MX core
+
+## Set sample
+
+```{r}
+#
+mySample <- c('P3683','P3685','P6634','P6636','P7036','PIC97750') # Mex
+#mySample <- c('P13198','P13527','PCO038','PCZ026','PCZ033','PCZ098') # SA
+#mySample <- c('DDR7602','Kew122','Kew126','P6515','P8141','P8844') # US1
+```
+
+## CNV data
+
+```{r, results='hide'}
+library(vcfR)
+vcf <- read.vcfR('../aard_ploid/pitg_cnv_20191206.vcf.gz', checkFile = FALSE)
+```
+
+
+```{r}
+abp <- extract.gt(vcf, element = "ABP", as.numeric = TRUE)
+```
+
+
+## Spacing
+
+
+```{r}
+source('FIR_ggplot_function.R')
+mySpacing <- read.csv('Pinf.FIR', stringsAsFactors = FALSE)
+rownames(mySpacing) <- mySpacing$geneid
+head(mySpacing)
+nrow(mySpacing)
+```
+
+
+## Gene classes
+
+
+```{r}
+pitg <- read.csv('../pinf_ref/pitg_coverage.csv', stringsAsFactors = FALSE)
+colnames(pitg)[1:12]
+colnames(pitg)[13:15]
+colnames(pitg)[145:153]
+```
+
+
+```{r}
+sl <- vector('list', length=6)
+names(sl) <- mySample
+
+for(i in 1:6){
+  myGenes <- names(abp[,mySample[i]][abp[,mySample[i]] == 3 & !is.na(abp[,mySample[i]])])
+  sl[[i]] <- mySpacing[myGenes,]
+  myGenes <- pitg$LOCUS[pitg$is.Core]
+#  myGenes <- pitg$LOCUS[pitg$is.RxLR]
+  sl[[i]] <- sl[[i]][na.omit(match(myGenes, sl[[i]]$geneid)),]
+  sl[[i]]$Sample <- mySample[i]
+  if(i %in% c(1,3,5)){
+    sl[[i]]$Side <- 'left'
+  } else {
+    sl[[i]]$Side <- 'right'
+  }
+  row.names( sl[[i]] ) <- NULL
+}
+
+lapply(sl, nrow)
+sum(unlist(lapply(sl, nrow)))
+
+
+mySpacing2 <- sl[[1]]
+mySpacing2 <- rbind(mySpacing2, sl[[2]], sl[[3]], sl[[4]], sl[[5]], sl[[6]])
+nrow(mySpacing2)
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$fiveprime),]
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$threeprime),]
+mySpacing2 <- mySpacing2[mySpacing2$fiveprime > 0,]
+mySpacing2 <- mySpacing2[mySpacing2$threeprime > 0,]
+head(mySpacing2)
+nrow(mySpacing2)
+```
+
+
+
+```{r}
+source('FIR_ggplot_function.R')
+
+p <- FIR_ggplot(mySpacing, legend = FALSE, xlab = FALSE, ylab = FALSE)
+p <- p + theme(axis.ticks = element_blank())
+p <- p + geom_point(data = mySpacing2,
+                      mapping = aes(x = fiveprime, y = threeprime),
+                      shape = 20, size = 2, 
+#                      color = '#1b9e7722',
+                      color = '#d95f0205',
+                      show.legend = FALSE)
+p <- p + facet_wrap( ~ Sample, ncol= 2)
+p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+               strip.background = element_rect(colour="black", fill="#228B22"))
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill="#FF8C00"))
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill='#8B0000'))
+p <- p + theme(panel.spacing = unit(0.5, "mm"))
+mx_core <- p
+```
+
+
+## SA core
+
+
+## Set sample
+
+```{r}
+#mySample <- c('P3683','P3685','P6634','P6636','P7036','PIC97750') # Mex
+#
+mySample <- c('P13198','P13527','PCO038','PCZ026','PCZ033','PCZ098') # SA
+#mySample <- c('DDR7602','Kew122','Kew126','P6515','P8141','P8844') # US1
+```
+
+## CNV data
+
+```{r, results='hide'}
+library(vcfR)
+vcf <- read.vcfR('../aard_ploid/pitg_cnv_20191206.vcf.gz', checkFile = FALSE)
+```
+
+
+```{r}
+abp <- extract.gt(vcf, element = "ABP", as.numeric = TRUE)
+```
+
+
+## Spacing
+
+
+```{r}
+source('FIR_ggplot_function.R')
+mySpacing <- read.csv('Pinf.FIR', stringsAsFactors = FALSE)
+rownames(mySpacing) <- mySpacing$geneid
+head(mySpacing)
+nrow(mySpacing)
+```
+
+
+## Gene classes
+
+
+```{r}
+pitg <- read.csv('../pinf_ref/pitg_coverage.csv', stringsAsFactors = FALSE)
+colnames(pitg)[1:12]
+colnames(pitg)[13:15]
+colnames(pitg)[145:153]
+```
+
+
+```{r}
+sl <- vector('list', length=6)
+names(sl) <- mySample
+
+for(i in 1:6){
+  myGenes <- names(abp[,mySample[i]][abp[,mySample[i]] == 3 & !is.na(abp[,mySample[i]])])
+  sl[[i]] <- mySpacing[myGenes,]
+  myGenes <- pitg$LOCUS[pitg$is.Core]
+#  myGenes <- pitg$LOCUS[pitg$is.RxLR]
+  sl[[i]] <- sl[[i]][na.omit(match(myGenes, sl[[i]]$geneid)),]
+  sl[[i]]$Sample <- mySample[i]
+  if(i %in% c(1,3,5)){
+    sl[[i]]$Side <- 'left'
+  } else {
+    sl[[i]]$Side <- 'right'
+  }
+  row.names( sl[[i]] ) <- NULL
+}
+
+lapply(sl, nrow)
+sum(unlist(lapply(sl, nrow)))
+
+
+mySpacing2 <- sl[[1]]
+mySpacing2 <- rbind(mySpacing2, sl[[2]], sl[[3]], sl[[4]], sl[[5]], sl[[6]])
+nrow(mySpacing2)
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$fiveprime),]
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$threeprime),]
+mySpacing2 <- mySpacing2[mySpacing2$fiveprime > 0,]
+mySpacing2 <- mySpacing2[mySpacing2$threeprime > 0,]
+head(mySpacing2)
+nrow(mySpacing2)
+```
+
+
+
+```{r}
+source('FIR_ggplot_function.R')
+
+p <- FIR_ggplot(mySpacing, legend = FALSE, xlab = FALSE, ylab = FALSE)
+p <- p + theme(axis.ticks = element_blank())
+p <- p + geom_point(data = mySpacing2,
+                      mapping = aes(x = fiveprime, y = threeprime),
+                      shape = 20, size = 2, 
+#                      color = '#1b9e7722',
+                      color = '#d95f0205',
+                      show.legend = FALSE)
+p <- p + facet_wrap( ~ Sample, ncol= 2)
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill="#228B22"))
+p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+               strip.background = element_rect(colour="black", fill="#FF8C00"))
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill='#8B0000'))
+p <- p + theme(panel.spacing = unit(0.5, "mm"))
+sa_core <- p
+```
+
+
+## US1 core
+
+
+## Set sample
+
+```{r}
+#mySample <- c('P3683','P3685','P6634','P6636','P7036','PIC97750') # Mex
+#mySample <- c('P13198','P13527','PCO038','PCZ026','PCZ033','PCZ098') # SA
+#
+mySample <- c('DDR7602','Kew122','Kew126','P6515','P8141','P8844') # US1
+```
+
+## CNV data
+
+```{r, results='hide'}
+library(vcfR)
+vcf <- read.vcfR('../aard_ploid/pitg_cnv_20191206.vcf.gz', checkFile = FALSE)
+```
+
+
+```{r}
+abp <- extract.gt(vcf, element = "ABP", as.numeric = TRUE)
+```
+
+
+## Spacing
+
+
+```{r}
+source('FIR_ggplot_function.R')
+mySpacing <- read.csv('Pinf.FIR', stringsAsFactors = FALSE)
+rownames(mySpacing) <- mySpacing$geneid
+head(mySpacing)
+nrow(mySpacing)
+```
+
+
+## Gene classes
+
+
+```{r}
+pitg <- read.csv('../pinf_ref/pitg_coverage.csv', stringsAsFactors = FALSE)
+colnames(pitg)[1:12]
+colnames(pitg)[13:15]
+colnames(pitg)[145:153]
+```
+
+
+```{r}
+sl <- vector('list', length=6)
+names(sl) <- mySample
+
+for(i in 1:6){
+  myGenes <- names(abp[,mySample[i]][abp[,mySample[i]] == 3 & !is.na(abp[,mySample[i]])])
+  sl[[i]] <- mySpacing[myGenes,]
+  myGenes <- pitg$LOCUS[pitg$is.Core]
+#  myGenes <- pitg$LOCUS[pitg$is.RxLR]
+  sl[[i]] <- sl[[i]][na.omit(match(myGenes, sl[[i]]$geneid)),]
+  sl[[i]]$Sample <- mySample[i]
+  if(i %in% c(1,3,5)){
+    sl[[i]]$Side <- 'left'
+  } else {
+    sl[[i]]$Side <- 'right'
+  }
+  row.names( sl[[i]] ) <- NULL
+}
+
+lapply(sl, nrow)
+sum(unlist(lapply(sl, nrow)))
+
+
+mySpacing2 <- sl[[1]]
+mySpacing2 <- rbind(mySpacing2, sl[[2]], sl[[3]], sl[[4]], sl[[5]], sl[[6]])
+nrow(mySpacing2)
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$fiveprime),]
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$threeprime),]
+mySpacing2 <- mySpacing2[mySpacing2$fiveprime > 0,]
+mySpacing2 <- mySpacing2[mySpacing2$threeprime > 0,]
+head(mySpacing2)
+nrow(mySpacing2)
+```
+
+
+
+```{r}
+source('FIR_ggplot_function.R')
+
+p <- FIR_ggplot(mySpacing, legend = FALSE, xlab = FALSE, ylab = FALSE)
+p <- p + theme(axis.ticks = element_blank())
+p <- p + geom_point(data = mySpacing2,
+                      mapping = aes(x = fiveprime, y = threeprime),
+                      shape = 20, size = 2, 
+#                      color = '#1b9e7722',
+                      color = '#d95f0205',
+                      show.legend = FALSE)
+p <- p + facet_wrap( ~ Sample, ncol= 2)
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill="#228B22"))
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill="#FF8C00"))
+p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+               strip.background = element_rect(colour="black", fill='#8B0000'))
+p <- p + theme(panel.spacing = unit(0.5, "mm"))
+us1_core <- p
+```
+
+
+## MX RxLR
+
+
+## Set sample
+
+```{r}
+#
+mySample <- c('P3683','P3685','P6634','P6636','P7036','PIC97750') # Mex
+#mySample <- c('P13198','P13527','PCO038','PCZ026','PCZ033','PCZ098') # SA
+#mySample <- c('DDR7602','Kew122','Kew126','P6515','P8141','P8844') # US1
+```
+
+## CNV data
+
+```{r, results='hide'}
+library(vcfR)
+vcf <- read.vcfR('../aard_ploid/pitg_cnv_20191206.vcf.gz', checkFile = FALSE)
+```
+
+
+```{r}
+abp <- extract.gt(vcf, element = "ABP", as.numeric = TRUE)
+```
+
+
+## Spacing
+
+
+```{r}
+source('FIR_ggplot_function.R')
+mySpacing <- read.csv('Pinf.FIR', stringsAsFactors = FALSE)
+rownames(mySpacing) <- mySpacing$geneid
+head(mySpacing)
+nrow(mySpacing)
+```
+
+
+## Gene classes
+
+
+```{r}
+pitg <- read.csv('../pinf_ref/pitg_coverage.csv', stringsAsFactors = FALSE)
+colnames(pitg)[1:12]
+colnames(pitg)[13:15]
+colnames(pitg)[145:153]
+```
+
+
+```{r}
+sl <- vector('list', length=6)
+names(sl) <- mySample
+
+for(i in 1:6){
+  myGenes <- names(abp[,mySample[i]][abp[,mySample[i]] == 3 & !is.na(abp[,mySample[i]])])
+  sl[[i]] <- mySpacing[myGenes,]
+#  myGenes <- pitg$LOCUS[pitg$is.Core]
+  myGenes <- pitg$LOCUS[pitg$is.RxLR]
+  sl[[i]] <- sl[[i]][na.omit(match(myGenes, sl[[i]]$geneid)),]
+  sl[[i]]$Sample <- mySample[i]
+  if(i %in% c(1,3,5)){
+    sl[[i]]$Side <- 'left'
+  } else {
+    sl[[i]]$Side <- 'right'
+  }
+  row.names( sl[[i]] ) <- NULL
+}
+
+lapply(sl, nrow)
+sum(unlist(lapply(sl, nrow)))
+
+
+mySpacing2 <- sl[[1]]
+mySpacing2 <- rbind(mySpacing2, sl[[2]], sl[[3]], sl[[4]], sl[[5]], sl[[6]])
+nrow(mySpacing2)
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$fiveprime),]
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$threeprime),]
+mySpacing2 <- mySpacing2[mySpacing2$fiveprime > 0,]
+mySpacing2 <- mySpacing2[mySpacing2$threeprime > 0,]
+head(mySpacing2)
+nrow(mySpacing2)
+```
+
+
+
+```{r}
+source('FIR_ggplot_function.R')
+
+p <- FIR_ggplot(mySpacing, legend = FALSE, xlab = FALSE, ylab = FALSE)
+p <- p + theme(axis.ticks = element_blank())
+p <- p + geom_point(data = mySpacing2,
+                      mapping = aes(x = fiveprime, y = threeprime),
+                      shape = 20, size = 2, 
+#                      color = '#1b9e7722',
+                      color = '#d95f0205',
+                      show.legend = FALSE)
+p <- p + facet_wrap( ~ Sample, ncol= 2)
+p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+               strip.background = element_rect(colour="black", fill="#228B22"))
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill="#FF8C00"))
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill='#8B0000'))
+p <- p + theme(panel.spacing = unit(0.5, "mm"))
+mx_rxlr <- p
+```
+
+
+## SA RxLR
+
+
+## Set sample
+
+```{r}
+#mySample <- c('P3683','P3685','P6634','P6636','P7036','PIC97750') # Mex
+#
+mySample <- c('P13198','P13527','PCO038','PCZ026','PCZ033','PCZ098') # SA
+#mySample <- c('DDR7602','Kew122','Kew126','P6515','P8141','P8844') # US1
+```
+
+## CNV data
+
+```{r, results='hide'}
+library(vcfR)
+vcf <- read.vcfR('../aard_ploid/pitg_cnv_20191206.vcf.gz', checkFile = FALSE)
+```
+
+
+```{r}
+abp <- extract.gt(vcf, element = "ABP", as.numeric = TRUE)
+```
+
+
+## Spacing
+
+
+```{r}
+source('FIR_ggplot_function.R')
+mySpacing <- read.csv('Pinf.FIR', stringsAsFactors = FALSE)
+rownames(mySpacing) <- mySpacing$geneid
+head(mySpacing)
+nrow(mySpacing)
+```
+
+
+## Gene classes
+
+
+```{r}
+pitg <- read.csv('../pinf_ref/pitg_coverage.csv', stringsAsFactors = FALSE)
+colnames(pitg)[1:12]
+colnames(pitg)[13:15]
+colnames(pitg)[145:153]
+```
+
+
+```{r}
+sl <- vector('list', length=6)
+names(sl) <- mySample
+
+for(i in 1:6){
+  myGenes <- names(abp[,mySample[i]][abp[,mySample[i]] == 3 & !is.na(abp[,mySample[i]])])
+  sl[[i]] <- mySpacing[myGenes,]
+#  myGenes <- pitg$LOCUS[pitg$is.Core]
+  myGenes <- pitg$LOCUS[pitg$is.RxLR]
+  sl[[i]] <- sl[[i]][na.omit(match(myGenes, sl[[i]]$geneid)),]
+  sl[[i]]$Sample <- mySample[i]
+  if(i %in% c(1,3,5)){
+    sl[[i]]$Side <- 'left'
+  } else {
+    sl[[i]]$Side <- 'right'
+  }
+  row.names( sl[[i]] ) <- NULL
+}
+
+lapply(sl, nrow)
+sum(unlist(lapply(sl, nrow)))
+
+
+mySpacing2 <- sl[[1]]
+mySpacing2 <- rbind(mySpacing2, sl[[2]], sl[[3]], sl[[4]], sl[[5]], sl[[6]])
+nrow(mySpacing2)
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$fiveprime),]
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$threeprime),]
+mySpacing2 <- mySpacing2[mySpacing2$fiveprime > 0,]
+mySpacing2 <- mySpacing2[mySpacing2$threeprime > 0,]
+head(mySpacing2)
+nrow(mySpacing2)
+```
+
+
+
+```{r}
+source('FIR_ggplot_function.R')
+
+p <- FIR_ggplot(mySpacing, legend = FALSE, xlab = FALSE, ylab = FALSE)
+p <- p + theme(axis.ticks = element_blank())
+p <- p + geom_point(data = mySpacing2,
+                      mapping = aes(x = fiveprime, y = threeprime),
+                      shape = 20, size = 2, 
+#                      color = '#1b9e7722',
+                      color = '#d95f0205',
+                      show.legend = FALSE)
+p <- p + facet_wrap( ~ Sample, ncol= 2)
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill="#228B22"))
+p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+               strip.background = element_rect(colour="black", fill="#FF8C00"))
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill='#8B0000'))
+p <- p + theme(panel.spacing = unit(0.5, "mm"))
+sa_rxlr <- p
+```
+
+
+## US1 RxLR
+
+
+## Set sample
+
+```{r}
+#mySample <- c('P3683','P3685','P6634','P6636','P7036','PIC97750') # Mex
+#mySample <- c('P13198','P13527','PCO038','PCZ026','PCZ033','PCZ098') # SA
+#
+mySample <- c('DDR7602','Kew122','Kew126','P6515','P8141','P8844') # US1
+```
+
+## CNV data
+
+```{r, results='hide'}
+library(vcfR)
+vcf <- read.vcfR('../aard_ploid/pitg_cnv_20191206.vcf.gz', checkFile = FALSE)
+```
+
+
+```{r}
+abp <- extract.gt(vcf, element = "ABP", as.numeric = TRUE)
+```
+
+
+## Spacing
+
+
+```{r}
+source('FIR_ggplot_function.R')
+mySpacing <- read.csv('Pinf.FIR', stringsAsFactors = FALSE)
+rownames(mySpacing) <- mySpacing$geneid
+head(mySpacing)
+nrow(mySpacing)
+```
+
+
+## Gene classes
+
+
+```{r}
+pitg <- read.csv('../pinf_ref/pitg_coverage.csv', stringsAsFactors = FALSE)
+colnames(pitg)[1:12]
+colnames(pitg)[13:15]
+colnames(pitg)[145:153]
+```
+
+
+```{r}
+sl <- vector('list', length=6)
+names(sl) <- mySample
+
+for(i in 1:6){
+  myGenes <- names(abp[,mySample[i]][abp[,mySample[i]] == 3 & !is.na(abp[,mySample[i]])])
+  sl[[i]] <- mySpacing[myGenes,]
+#  myGenes <- pitg$LOCUS[pitg$is.Core]
+  myGenes <- pitg$LOCUS[pitg$is.RxLR]
+  sl[[i]] <- sl[[i]][na.omit(match(myGenes, sl[[i]]$geneid)),]
+  sl[[i]]$Sample <- mySample[i]
+  if(i %in% c(1,3,5)){
+    sl[[i]]$Side <- 'left'
+  } else {
+    sl[[i]]$Side <- 'right'
+  }
+  row.names( sl[[i]] ) <- NULL
+}
+
+lapply(sl, nrow)
+sum(unlist(lapply(sl, nrow)))
+
+
+mySpacing2 <- sl[[1]]
+mySpacing2 <- rbind(mySpacing2, sl[[2]], sl[[3]], sl[[4]], sl[[5]], sl[[6]])
+nrow(mySpacing2)
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$fiveprime),]
+mySpacing2 <- mySpacing2[!is.na(mySpacing2$threeprime),]
+mySpacing2 <- mySpacing2[mySpacing2$fiveprime > 0,]
+mySpacing2 <- mySpacing2[mySpacing2$threeprime > 0,]
+head(mySpacing2)
+nrow(mySpacing2)
+```
+
+
+
+```{r}
+source('FIR_ggplot_function.R')
+
+p <- FIR_ggplot(mySpacing, legend = FALSE, xlab = FALSE, ylab = FALSE)
+p <- p + theme(axis.ticks = element_blank())
+p <- p + geom_point(data = mySpacing2,
+                      mapping = aes(x = fiveprime, y = threeprime),
+                      shape = 20, size = 2, 
+#                      color = '#1b9e7722',
+                      color = '#d95f0205',
+                      show.legend = FALSE)
+p <- p + facet_wrap( ~ Sample, ncol= 2)
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill="#228B22"))
+#p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+#               strip.background = element_rect(colour="black", fill="#FF8C00"))
+p <- p + theme(strip.text.x = element_text(size=8, angle=0, color = "#FFFFFF"),
+               strip.background = element_rect(colour="black", fill='#8B0000'))
+p <- p + theme(panel.spacing = unit(0.5, "mm"))
+#p <- p + theme(plot.margin=unit(c(-1.0,0.0,0.0,-1.0),"cm"))
+#p <- p + theme(plot.margin=margin(1.0,0.0,0.0,2.0,"cm"))
+
+p <- p +
+  theme(
+    panel.background = element_rect(fill = "transparent") # bg of the panel
+    , plot.background = element_rect(fill = "transparent", color = NA) # bg of the plot
+#    , panel.grid.major = element_blank() # get rid of major grid
+#    , panel.grid.minor = element_blank() # get rid of minor grid
+#    , legend.background = element_rect(fill = "transparent") # get rid of legend bg
+#    , legend.box.background = element_rect(fill = "transparent") # get rid of legend panel bg
+  )
+#p
+
+us1_rxlr <- p
+```
+
+
+
+```{r}
+
+#plot(1,1,type='n', xlab='', ylab='', axes=F)
+#rect(xleft=0.6, ybottom=0.6, xright=1.4, ytop=1.4)
+#text(1,1,'Mexican', cex=8)
+
+library(cowplot)
+#myList <- list(mx_core, sa_core, us1_core, mx_rxlr, sa_rxlr, us1_rxlr)
+myList <- list(mx_core, sa_core, us1_core)
+
+
+#png('fir_core_rxlr.png', width = 6.5, height = 6.5, units = 'in', res = 300)
+plot_grid(plotlist = myList, nrow = 1, align = 'hv')
+#dev.off()
+```
+
+
+
+```{r}
+myPush <- 0.006
+
+#png('fir_core_rxlr.png', width = 6.5, height = 6.5, units = 'in', res = 300)
+ggdraw() +
+  draw_plot(mx_core, x = 0 - myPush, y = 0.5 - myPush, width = 0.333 - 0.001 + myPush * 2, height = 0.5 - 0.001 + myPush * 2) +
+  draw_plot(sa_core, x = 0.333 - myPush, y = 0.5 - myPush, width = 0.333 - 0.001 + myPush * 2, height = 0.5 - 0.001 + myPush * 2) +
+  draw_plot(us1_core, x = 0.666 - myPush, y = 0.5 - myPush, width = 0.333 - 0.001 + myPush * 2, height = 0.5 - 0.001 + myPush * 2) +
+  draw_plot(mx_rxlr, x =  0 - myPush, y = 0 - myPush, width = 0.333 - 0.001 + myPush * 2, height = 0.5 - 0.001 + myPush * 2) +
+  draw_plot(sa_rxlr, x = 0.333 - myPush, y = 0 - myPush, width = 0.333 - 0.001 + myPush * 2, height = 0.5 - 0.001 + myPush * 2) +
+  draw_plot(us1_rxlr, x = 0.666 - myPush, y = 0 - myPush, width = 0.333 - 0.001 + myPush * 2, height = 0.5 - 0.001 + myPush * 2) 
+#dev.off()
+
+```
+
+
+```{r}
+myPush <- 0.006
+
+#png('fir_core.png', width = 6.5, height = 3.25, units = 'in', res = 300)
+ggdraw() +
+  draw_plot(mx_core, x = 0 - myPush, y = 0.0 - myPush, width = 0.333 - 0.001 + myPush * 2, height = 1.0 - 0.001 + myPush * 2) +
+  draw_plot(sa_core, x = 0.333 - myPush, y = 0.0 - myPush, width = 0.333 - 0.001 + myPush * 2, height = 1.0 - 0.001 + myPush * 2) +
+  draw_plot(us1_core, x = 0.666 - myPush, y = 0.0 - myPush, width = 0.333 - 0.001 + myPush * 2, height = 1.0 - 0.001 + myPush * 2)
+
+#dev.off()
+
+```
+
+
+```{r}
+
+#png('regions.png', width = 6.5, height = 0.25, units = 'in', res = 300)
+par(mfrow=c(1,3))
+par(mar=c(0.1,0.6,0.1,0.6))
+plot(0,0, type = 'n', xaxt='n', yaxt='n', xlab='', ylab='')
+rect(xleft=-2, ybottom=-2, xright=2, ytop=2, col = '#228B22')
+text(0,0, 'Mexico', col='#ffffff', font = 2)
+plot(0,0, type = 'n', xaxt='n', yaxt='n', xlab='', ylab='')
+rect(xleft=-2, ybottom=-2, xright=2, ytop=2, col = '#FF8C00')
+text(0,0, 'S. America', col='#ffffff', font = 2)
+plot(0,0, type = 'n', xaxt='n', yaxt='n', xlab='', ylab='')
+rect(xleft=-2, ybottom=-2, xright=2, ytop=2, col = '#8B0000')
+text(0,0, 'US-1', col='#ffffff', font = 2)
+#dev.off()
+
+```
+
+
+Merge.
+
+
+```{r}
+#system('convert regions.png fir_core.png -append region_fir_core.png')
+```
