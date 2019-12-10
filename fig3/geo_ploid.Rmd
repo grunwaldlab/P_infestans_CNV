@@ -14,6 +14,7 @@ knitr::opts_chunk$set(fig.height = 6)
 
 
 
+
 ```{r, results='hide'}
 library(vcfR)
 #vcf <- read.vcfR("../cnv_vcf/pitg_cnv.vcf.gz")
@@ -479,15 +480,63 @@ par(mar=c(5,4,4,2))
 ```
 
 
-## 2 row
+## 1 row
 
+
+```{r}
+#pdf("cline_bp.pdf", width = 5.5, height = 2.5, pointsize = 8)
+par(oma = c(0,0,0,0))
+par(mar=c(6,3,2,0))
+par(mgp = c(2,0.2,0))
+barplot(pmat2, space = 0, las = 2, col=1:5, yaxt = "n")
+axis(side = 2, at = seq(0, 1, by = 0.2), line = -1, las = 2, 
+     labels = c("0%", "20%", "40%", "60%", "80%", "100%"))
+title(ylab = "Genes", line = 2)
+par(mar=c(5,4,4,2))
+#dev.off()
+```
 
 
 ```{r}
 myMat <- matrix(ncol=47, nrow=1)
-myMat[1,] <- 1
+myMat[1, 1:16] <- 1
+myMat[1, 17:23] <- 2
+myMat[1, 24:27] <- 3
+myMat[1, 28:34] <- 4
+myMat[1, 35:36] <- 5
+myMat[1, 37:37] <- 6
+myMat[1, 38:38] <- 7
+myMat[1, 39:41] <- 8
+myMat[1, 42:43] <- 9
+myMat[1, 44:44] <- 10
+myMat[1, 45:47] <- 11
 
 
+#pdf("geo_bp.pdf", width = 5.5, height = 2.5, pointsize = 10)
+
+layout( mat = myMat)
+par(oma = c(0, 3, 0, 0))
+par(mar = c(6,0.1,1,0.1))
+par(mgp = c(2,0.2,0))
+barplot(mx, space = 0, las = 2, col=1:5, yaxt = "n")
+axis(side = 2, at = seq(0, 1, by = 0.2), line = -1, las = 2, 
+     labels = c("0%", "20%", "40%", "60%", "80%", "100%"))
+title(ylab = "Genes", line = 2, outer = TRUE)
+barplot(sa, space = 0, las = 2, col=1:5, yaxt = "n")
+barplot(herb1, space = 0, las = 2, col=1:5, yaxt = "n")
+barplot(us1, space = 0, las = 2, col=1:5, yaxt = "n")
+barplot(us8, space = 0, las = 2, col=1:5, yaxt = "n")
+barplot(us11, space = 0, las = 2, col=1:5, yaxt = "n")
+barplot(us18, space = 0, las = 2, col=1:5, yaxt = "n")
+barplot(us22, space = 0, las = 2, col=1:5, yaxt = "n")
+barplot(us23, space = 0, las = 2, col=1:5, yaxt = "n")
+barplot(us24, space = 0, las = 2, col=1:5, yaxt = "n")
+barplot(eu, space = 0, las = 2, col=1:5, yaxt = "n")
+
+#dev.off()
+
+
+par(mar = c(5,4,4,2))
 ```
 
 
