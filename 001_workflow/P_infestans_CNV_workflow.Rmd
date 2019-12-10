@@ -104,4 +104,45 @@ This script combines the ploidy files into one file.
 It creates the file "pitg_cnv_```Sys.Date()```.vcf.gz".
 
 
+## Figures
+
+
+### Figure 1
+
+The panels were produced in R.
+The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).
+
+### Figure 2
+
+The panels were produced in R.
+The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).
+
+### Figure 3
+
+The panels were produced in R.
+The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).
+
+### Figure 4
+
+The panels were produced in R.
+The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).
+
+### Figure 5
+
+The panels were produced in R.
+The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).
+
+### Figure 6
+
+The panels were produced in R.
+The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).
+
+### Figure 7
+
+The panels were produced in R.
+The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).
+
+### Figure 8
+
+Figure 8 was entirely made in point-and-click software (e.g., photoshop, illustrator, the GIMP).
 
