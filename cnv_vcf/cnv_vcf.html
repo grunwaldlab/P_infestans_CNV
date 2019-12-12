@@ -397,6 +397,7 @@ $(document).ready(function () {
 </div>
 <div id="boc-and-ard" class="section level2">
 <h2>BOC and ARD</h2>
+<p>The breadth of coverage and average read depth were calculated by using <code>samtools mpileup</code> to create a file for each gene that included read depth for each position in each gene for each sample. The files produced by <code>samtools mpileup</code> are too large to store on GitHub. The files <code>gene_coverage.csv</code> are summaries of the <code>samtools mpileup</code> files.</p>
 <pre class="r"><code># Initialize
 covs &lt;- read.table(&quot;../raffaele2010/proc_pu/gene_coverage.csv&quot;, header = TRUE, sep = &quot;,&quot;)
 ncol(covs)/3 == 6</code></pre>
@@ -859,7 +860,7 @@ meta &lt;- c(meta, '##FORMAT=&lt;ID=ZSC,Number=1,Type=Float,Description=&quot;Z-
 <pre class="r"><code>library(vcfR)</code></pre>
 <pre><code>## 
 ##    *****       ***   vcfR   ***       *****
-##    This is vcfR 1.8.0.9000 
+##    This is vcfR 1.8.0 
 ##      browseVignettes('vcfR') # Documentation
 ##      citation('vcfR') # Citation
 ##    *****       *****      *****       *****</code></pre>

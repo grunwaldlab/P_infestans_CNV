@@ -12,7 +12,8 @@ knitr::opts_chunk$set(fig.width = 12)
 knitr::opts_chunk$set(fig.height = 12)
 ```
 
-Load data from three files and combine into one long form data.frame.
+Each `*.RData` file includes long form copy number estimates for each sample in each group.
+Load data from these three files and combine into one long form data.frame.
 Count the number of genes that were of each copy number class and each annotation with `table()`.
 
 ```{r}

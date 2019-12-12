@@ -25,6 +25,10 @@ here we assemble this information into one file.
 
 ## BOC and ARD
 
+The breadth of coverage and average read depth were calculated by using `samtools mpileup` to create a file for each gene that included read depth for each position in each gene for each sample.
+The files produced by `samtools mpileup` are too large to store on GitHub.
+The files `gene_coverage.csv` are summaries of the `samtools mpileup` files.
+
 
 ```{r}
 # Initialize
