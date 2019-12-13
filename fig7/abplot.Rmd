@@ -26,28 +26,14 @@ pand$PaX <- ab1
 
 ```{r}
 pinf <- vector(mode = 'list', length = 0)
-load("../ab_RData_min20_max80/pinf/06_3928A_ab.RData")
-pinf$blue13 <- ab1
-load("../ab_RData_min20_max80/pinf/BL2009P4_ab.RData")
-pinf$BL2009P4 <- ab1
 load("../ab_RData_min20_max80/pinf/DDR7602_ab.RData")
 pinf$DDR7602 <- ab1
-#load("../ab_RData_min20_max80/pinf/FP-GCC_ab.RData")
-#pinf$FP-GCC <- ab1
-load("../ab_RData_min20_max80/pinf/LBUS_ab.RData")
-pinf$LBUS <- ab1
 load("../ab_RData_min20_max80/pinf/NL07434_ab.RData")
 pinf$NL07434 <- ab1
-load("../ab_RData_min20_max80/pinf/P13527_ab.RData")
-pinf$P13527 <- ab1
 load("../ab_RData_min20_max80/pinf/P13626_ab.RData")
 pinf$P13626 <- ab1
 load("../ab_RData_min20_max80/pinf/P17777_ab.RData")
 pinf$P17777 <- ab1
-load("../ab_RData_min20_max80/pinf/P8144_ab.RData")
-pinf$P8144 <- ab1
-load("../ab_RData_min20_max80/pinf/PIC97750_ab.RData")
-pinf$PIC97750 <- ab1
 ```
 
 
@@ -80,49 +66,7 @@ load("../ab_RData_min20_max80/ppar/P10297_ab.RData")
 ppar$P10297 <- ab1
 load("../ab_RData_min20_max80/ppar/P1569_ab.RData")
 ppar$P1569 <- ab1
-load("../ab_RData_min20_max80/ppar/P1976_ab.RData")
-ppar$P1976 <- ab1
 ```
-
-
-## P. mirabilis
-
-
-```{r}
-pmir <- vector(mode = 'list', length = 0)
-load("../ab_RData_min20_max80/pmir/00M_410_ab.RData")
-pmir$X00M_410 <- ab1
-load("../ab_RData_min20_max80/pmir/CBS_678_ab.RData")
-pmir$CBS_678 <- ab1
-load("../ab_RData_min20_max80/pmir/P3001_ab.RData")
-pmir$P3001 <- ab1
-load("../ab_RData_min20_max80/pmir/P7722_ab.RData")
-pmir$P7722 <- ab1
-load("../ab_RData_min20_max80/pmir/PIC99114_ab.RData")
-pmir$PIC99114 <- ab1
-load("../ab_RData_min20_max80/pmir/Pmir5_ab.RData")
-pmir$Pmir5 <- ab1
-```
-
-
-## P. ipomoeae
-
-
-```{r}
-pipo <- vector(mode = 'list', length = 0)
-load("../ab_RData_min20_max80/pipo/00Ip5_ab.RData")
-pipo$X00Ip5 <- ab1
-load("../ab_RData_min20_max80/pipo/Ipom_1-2_ab.RData")
-pipo$Ipom_1_2 <- ab1
-load("../ab_RData_min20_max80/pipo/Ipom_2-4_ab.RData")
-pipo$Ipom_2_4 <- ab1
-load("../ab_RData_min20_max80/pipo/PIC99167_ab.RData")
-pipo$PIC99167 <- ab1
-load("../ab_RData_min20_max80/pipo/Pipo5_ab.RData")
-pipo$Pipo5 <- ab1
-```
-
-
 
 
 # Plot
@@ -231,126 +175,6 @@ title(main = "P1569", line = 0.5)
 # #axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
 # #abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
 # title(main = "P1976", line = 0.5)
-
-#dev.off()
-
-par(mfcol=c(1,1))
-par(mar=c(5,4,4,2))
-
-
-```
-
-
-
-## P. mirabilis
-
-
-```{r}
-
-#pdf("pmir_abhist.pdf", width = 3.25, height = 1, pointsize = 10)
-#pdf("pmir_abhist.pdf", width = 6.5, height = 2)
-
-par(mfcol=c(1,6))
-#par(mar=c(3,4,2,0.5))
-par(mar=c(1,1,2,0.5))
-
-hist(pmir$X00M_410[,'00M_410_ab2'], breaks = seq(0,1,by=0.02), col = "#fb9a99", xaxt="n", yaxt="n", main="", xlab = "", ylab="", border = "#fb9a99", las = 2)
-hist(pmir$X00M_410[,'00M_410_ab1'], breaks = seq(0,1,by=0.02), col = "#e31a1c", add = TRUE, border = "#e31a1c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=FALSE, las=2)
-axis(side=2, at=seq(0,2e4, by=1e4), labels = FALSE)
-#axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-#abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "00M_410", line = 0.5)
-
-hist(pmir$CBS_678[,'CBS_678_ab2'], breaks = seq(0,1,by=0.02), col = "#fb9a99", xaxt="n", yaxt="n", main="", xlab = "", ylab="", border = "#fb9a99", las = 2)
-hist(pmir$CBS_678[,'CBS_678_ab1'], breaks = seq(0,1,by=0.02), col = "#e31a1c", add = TRUE, border = "#e31a1c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=FALSE, las=2)
-axis(side=2, at=seq(0,2e4, by=1e4), labels = FALSE)
-#axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-#abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "CBS_678", line = 0.5)
-
-hist(pmir$P3001[,'P3001_ab2'], breaks = seq(0,1,by=0.02), col = "#fb9a99", xaxt="n", yaxt="n", main="", xlab = "", ylab="", border = "#fb9a99", las = 2)
-hist(pmir$P3001[,'P3001_ab1'], breaks = seq(0,1,by=0.02), col = "#e31a1c", add = TRUE, border = "#e31a1c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=FALSE, las=2)
-axis(side=2, at=seq(0,2e4, by=1e4), labels = FALSE)
-#axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-#abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "P3001", line = 0.5)
-
-hist(pmir$P7722[,'P7722_ab2'], breaks = seq(0,1,by=0.02), col = "#fb9a99", xaxt="n", yaxt="n", main="", xlab = "", ylab="", border = "#fb9a99", las = 2)
-hist(pmir$P7722[,'P7722_ab1'], breaks = seq(0,1,by=0.02), col = "#e31a1c", add = TRUE, border = "#e31a1c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=FALSE, las=2)
-axis(side=2, at=seq(0,2e4, by=1e4), labels = FALSE)
-#axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-#abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "P7722", line = 0.5)
-
-hist(pmir$PIC99114[,'PIC99114_ab2'], breaks = seq(0,1,by=0.02), col = "#fb9a99", xaxt="n", yaxt="n", main="", xlab = "", ylab="", border = "#fb9a99", las = 2)
-hist(pmir$PIC99114[,'PIC99114_ab1'], breaks = seq(0,1,by=0.02), col = "#e31a1c", add = TRUE, border = "#e31a1c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=FALSE, las=2)
-axis(side=2, at=seq(0,2e4, by=1e4), labels = FALSE)
-#axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-#abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "PIC99114", line = 0.5)
-
-hist(pmir$Pmir5[,'Pmir5_ab2'], breaks = seq(0,1,by=0.02), col = "#fb9a99", xaxt="n", yaxt="n", main="", xlab = "", ylab="", border = "#fb9a99", las = 2)
-hist(pmir$Pmir5[,'Pmir5_ab1'], breaks = seq(0,1,by=0.02), col = "#e31a1c", add = TRUE, border = "#e31a1c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=FALSE, las=2)
-axis(side=2, at=seq(0,2e4, by=1e4), labels = FALSE)
-#axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-#abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "Pmir5", line = 0.5)
-
-#dev.off()
-
-par(mfcol=c(1,1))
-par(mar=c(5,4,4,2))
-
-
-```
-
-
-
-## P. ipomoeae
-
-
-```{r}
-
-#pdf("pipo_abhist.pdf", width = 6.5, height = 2)
-
-par(mfcol=c(1,6))
-par(mar=c(3,4,2,0.5))
-
-hist(pipo$X00Ip5[,'00Ip5_ab2'], breaks = seq(0,1,by=0.02), col = "#b2df8a", xaxt="n", main="", xlab = "", ylab="", border = "#b2df8a", las = 2)
-hist(pipo$X00Ip5[,'00Ip5_ab1'], breaks = seq(0,1,by=0.02), col = "#33a02c", add = TRUE, border = "#33a02c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "00Ip5", line = 0.5)
-
-hist(pipo$Ipom_1_2[,'Ipom_1-2_ab2'], breaks = seq(0,1,by=0.02), col = "#b2df8a", xaxt="n", main="", xlab = "", ylab="", border = "#b2df8a", las = 2)
-hist(pipo$Ipom_1_2[,'Ipom_1-2_ab1'], breaks = seq(0,1,by=0.02), col = "#33a02c", add = TRUE, border = "#33a02c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "Ipom_1-2", line = 0.5)
-
-hist(pipo$Ipom_2_4[,'Ipom_2-4_ab2'], breaks = seq(0,1,by=0.02), col = "#b2df8a", xaxt="n", main="", xlab = "", ylab="", border = "#b2df8a", las = 2)
-hist(pipo$Ipom_2_4[,'Ipom_2-4_ab1'], breaks = seq(0,1,by=0.02), col = "#33a02c", add = TRUE, border = "#33a02c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "Ipom_2-4", line = 0.5)
-
-hist(pipo$PIC99167[,'PIC99167_ab2'], breaks = seq(0,1,by=0.02), col = "#b2df8a", xaxt="n", main="", xlab = "", ylab="", border = "#b2df8a", las = 2)
-hist(pipo$PIC99167[,'PIC99167_ab1'], breaks = seq(0,1,by=0.02), col = "#33a02c", add = TRUE, border = "#33a02c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "PIC99167", line = 0.5)
-
-hist(pipo$Pipo5[,'Pipo5_ab2'], breaks = seq(0,1,by=0.02), col = "#b2df8a", xaxt="n", main="", xlab = "", ylab="", border = "#b2df8a", las = 2)
-hist(pipo$Pipo5[,'Pipo5_ab1'], breaks = seq(0,1,by=0.02), col = "#33a02c", add = TRUE, border = "#33a02c")
-axis(side=1, at=c(0,0.2,0.25,0.333,0.5,0.666,0.75, 0.8,1), labels=c(0,"","1/4","1/3","1/2","2/3","3/4","",1), las=2)
-abline(v=c(1/3,1/2,2/3), col="#808080", lwd=2)
-title(main = "Pipo5", line = 0.5)
 
 #dev.off()
 
