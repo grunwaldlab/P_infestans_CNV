@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Brian J. Knaus" />
@@ -269,7 +269,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -331,6 +330,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -342,18 +342,6 @@ summary {
   display: none;
 }
 </style>
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
 
 <!-- code folding -->
 
@@ -396,7 +384,6 @@ $(document).ready(function () {
 <li><a href="#figure-4">Figure 4</a></li>
 <li><a href="#figure-5">Figure 5</a></li>
 <li><a href="#figure-6">Figure 6</a></li>
-<li><a href="#figure-7">Figure 7</a></li>
 <li><a href="#figure-8">Figure 8</a></li>
 </ul></li>
 </ul>
@@ -445,7 +432,7 @@ aard_ploid/aard_trips.Rmd</code></pre>
 <h2>Figures</h2>
 <div id="figure-1" class="section level3">
 <h3>Figure 1</h3>
-<p>The panels were produced in R. The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).</p>
+<p>The panel were produced in R.</p>
 </div>
 <div id="figure-2" class="section level3">
 <h3>Figure 2</h3>
@@ -457,18 +444,14 @@ aard_ploid/aard_trips.Rmd</code></pre>
 </div>
 <div id="figure-4" class="section level3">
 <h3>Figure 4</h3>
-<p>The panels were produced in R. The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).</p>
+<p>The panels were produced in R.</p>
 </div>
 <div id="figure-5" class="section level3">
 <h3>Figure 5</h3>
-<p>The panels were produced in R. The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).</p>
+<p>The panels were produced in R.</p>
 </div>
 <div id="figure-6" class="section level3">
 <h3>Figure 6</h3>
-<p>The panels were produced in R. The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).</p>
-</div>
-<div id="figure-7" class="section level3">
-<h3>Figure 7</h3>
 <p>The panels were produced in R. The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).</p>
 </div>
 <div id="figure-8" class="section level3">
@@ -494,6 +477,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
