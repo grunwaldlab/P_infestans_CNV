@@ -133,7 +133,7 @@ The panels were produced in R.
 The panels were produced in R.
 The figure was finished in point-and-click software (e.g., photoshop, illustrator, the GIMP).
 
-### Figure 8
+### Figure 7
 
-Figure 8 was entirely made in point-and-click software (e.g., photoshop, illustrator, the GIMP).
+Figure 7 was entirely made in point-and-click software (e.g., photoshop, illustrator, the GIMP).
 
