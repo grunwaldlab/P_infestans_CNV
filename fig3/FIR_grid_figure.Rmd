@@ -101,21 +101,9 @@ ggsave(fir.plot, device = "png", width = 2.77778, height = 2.77778, filename = "
 # Separating by population and extracting BOC
 
 ```{r, eval=FALSE}
-library(vcfR)
-vcf <- read.vcfR("./pitg_cnv_20170518.vcf.gz", checkFile = F)
-samp <- vcf[, sample = c("P3685", "P6634", "P7036", "P3683", "P8143", "P6636", "P8144", "PIC97207", "PIC97605", "PIC97630", "PIC97146", "PIC97335", "PIC97785", "PIC97750", "P10650", "PIC98372")]
-
-boc <- extract.gt(samp, element = "BOC", as.numeric = TRUE)
-
-set.seed(9)
-
-mxboc <- boc[,sample(x = 1:ncol(boc), size = 7)]
-
-samp <- vcf[, sample = c("PCZ026", "PCZ098", "PCO038", "PCZ033", "P13198", "P13527", "P13626")]
-saboc <- extract.gt(samp, element = "BOC", as.numeric = TRUE)
-
-us1 <- vcf[, sample = c("P8141", "Kew126", "P6515", "P8844", "DDR7602", "Kew122", "LBUS")]
-us1boc <- extract.gt(us1, element = "BOC", as.numeric = TRUE)
+mxboc <- readRDS( file = "mxboc.Rds")
+us1boc <- readRDS(file = "us1boc.Rds")
+saboc <- readRDS(file = "saboc.Rds")
 ```
 
 # Including coverage values
