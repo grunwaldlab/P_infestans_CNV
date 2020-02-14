@@ -1,0 +1,295 @@
+---
+title: "Figure 3"
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: inline
+---
+
+# Creating the flanking intergenic region (FIR) background picture
+
+```{r}
+fir <- read.table("Pinf.FIR", sep = ",", header = TRUE)
+rownames(fir) <- fir[,1]
+```
+
+```{r}
+FIR_ggplot <- function(x, bins=30, legend=TRUE, xlab = TRUE, ylab = TRUE, ...){
+  require(ggplot2)
+  require(hexbin)
+  x <- x[!is.na(x$fiveprime),]
+  x <- x[!is.na(x$threeprime),]
+  x <- x[!x$fiveprime == 0, ]
+  x <- x[!x$threeprime == 0, ]
+  #x <- ggplot(x,aes(log(fiveprime),log(threeprime)))
+  x <- ggplot(x,aes(fiveprime, threeprime))
+  x <- x + scale_y_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  x <- x + scale_x_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  x <- x + stat_binhex(bins = bins)
+  #x <- x + scale_fill_gradientn(colours = c("white", "darkblue", "forestgreen", "goldenrod1", "orangered", "red3", "darkred"))
+  x <- x + scale_fill_gradientn(colours = c("white","slategray1","darkseagreen2","lightgoldenrod1","indianred1","indianred3"))
+#  x <- x + xlim(c(0,12.5)) + ylim(c(0,12.5))
+
+  x <- x + labs(x = "5' distance (log bp)")
+  x <- x + labs(y = "3' distance (log bp)")
+  x <- x + theme_bw()
+
+  if( legend == FALSE ){
+    x <- x + theme(legend.position="none")
+  }
+  if( xlab == FALSE ){
+    x <- x + theme(axis.title.x=element_blank(), 
+                   axis.text.x=element_blank())
+  }
+  if( ylab == FALSE ){
+    x <- x + theme(axis.title.y=element_blank(), 
+                   axis.text.y=element_blank())
+  }
+
+  return(x)
+}
+
+
+enrich_FIR <- function(boc=boc, fir=fir, label=NULL, label_size = 10, threshold=0, legend = TRUE){
+
+  # Isolate deleted genes.
+  deleted_boc <- apply(boc, MARGIN=1, function(x){ sum(x <= threshold) == length(x) })
+  deleted_boc <- deleted_boc[deleted_boc == TRUE]
+  deleted_FIR <- fir[names(deleted_boc),]
+  deleted_FIR <- deleted_FIR[!is.na(deleted_FIR$fiveprime) & !is.na(deleted_FIR$threeprime),]
+  
+  # Fisher's exact test.
+  subFir <- fir[!is.na(fir$fiveprime) & !is.na(fir$threeprime), ]
+
+  genes <- matrix(
+    c(nrow(subFir[subFir$fiveprime <= 1500 & subFir$threeprime <= 1500,]),
+      nrow(subFir[subFir$fiveprime > 1500 & subFir$threeprime > 1500,]),
+      nrow(deleted_FIR[deleted_FIR$fiveprime <= 1500 & deleted_FIR$threeprime <= 1500,]),
+      nrow(deleted_FIR[deleted_FIR$fiveprime > 1500 & deleted_FIR$threeprime > 1500,])
+    ), nrow = 2, dimnames = list(c('Present','Absent'), c('Dense','Sparse'))
+  )
+  feP <- round(fisher.test(genes, alternative = "greater")$p.value, digits = 4)
+  
+  # Plot
+  if( legend == TRUE ){
+    p <- FIR_ggplot(fir)
+  } else {
+    p <- FIR_ggplot(fir, legend = FALSE, xlab = FALSE, ylab = FALSE)
+  }
+  p <- p + geom_point( data = deleted_FIR, aes(fiveprime,threeprime), colour="#00000088",size=1)
+  
+  if( !is.null(label) ){
+    p <- p + geom_rect(aes(xmin = 1e0, xmax=1e6, ymin=1, ymax=1e1), colour="#808080", fill="#808080", alpha = 0.003)
+    p <- p + geom_text(aes(x=1e3,y=3),label=label,color="white", size = label_size)
+  }
+#p <- p + geom_text(aes(x=3e0,y=17),label="n=14",color="black", size = 6)
+  p <- p + geom_text(aes(x=4e0,y=30),label=paste("n=", nrow(deleted_FIR), sep = ""),color="black", size = 3)
+  p <- p + geom_text(aes(x=1e5,y=30),label=paste("p-value=", feP, sep = ""),color="black", size = 3)
+  return(p)
+}
+```
+
+- Fir plot: 
+
+```{r}
+library(ggplot2)
+(fir.plot <- FIR_ggplot(fir) + scale_alpha(range = c(0.9,0.9)))
+ggsave(fir.plot, device = "png", width = 2.77778, height = 2.77778, filename = "FIR_background.png", dpi = 600)
+```
+
+# Separating by population and extracting BOC
+
+```{r, eval=FALSE}
+library(vcfR)
+vcf <- read.vcfR("./pitg_cnv_20170518.vcf.gz", checkFile = F)
+samp <- vcf[, sample = c("P3685", "P6634", "P7036", "P3683", "P8143", "P6636", "P8144", "PIC97207", "PIC97605", "PIC97630", "PIC97146", "PIC97335", "PIC97785", "PIC97750", "P10650", "PIC98372")]
+
+boc <- extract.gt(samp, element = "BOC", as.numeric = TRUE)
+
+set.seed(9)
+
+mxboc <- boc[,sample(x = 1:ncol(boc), size = 7)]
+
+samp <- vcf[, sample = c("PCZ026", "PCZ098", "PCO038", "PCZ033", "P13198", "P13527", "P13626")]
+saboc <- extract.gt(samp, element = "BOC", as.numeric = TRUE)
+
+us1 <- vcf[, sample = c("P8141", "Kew126", "P6515", "P8844", "DDR7602", "Kew122", "LBUS")]
+us1boc <- extract.gt(us1, element = "BOC", as.numeric = TRUE)
+```
+
+# Including coverage values
+
+```{r}
+pitg.ann <- read.csv("pitg_coverage.csv", stringsAsFactors = F)
+pitg.ann <- pitg.ann[,c(1,13,15:21)]
+pitg.ann$No_annotation <- apply(pitg.ann[,c(2:ncol(pitg.ann))], 1, sum) == 0
+pitg.ann <- reshape2::melt(pitg.ann, id="LOCUS")
+pitg.ann <- pitg.ann[pitg.ann$value,c(1:2)]
+pitg.ann$variable <- gsub(pitg.ann$variable, pattern = "is.", replacement = "")
+colnames(pitg.ann) <- c("geneid","locus")
+pitg.ann <- pitg.ann[order(pitg.ann$geneid), ]
+rownames(pitg.ann) <- NULL
+```
+
+
+```{r}
+all.boc <- list(mxboc, saboc, us1boc)
+names(all.boc) <- c("Mexico","South America", "US-1 lineage")
+library("grid")
+
+fir.sample <- list()
+for (i in 1:length(all.boc)){
+  threshold <- 0
+  deleted_boc <- apply(all.boc[[i]], MARGIN=1, function(x){ sum(x <= threshold) == length(x) })
+  deleted_boc <- deleted_boc[deleted_boc == TRUE]
+  deleted_FIR <- fir[names(deleted_boc),]
+  deleted_FIR <- deleted_FIR[!is.na(deleted_FIR$fiveprime) & !is.na(deleted_FIR$threeprime),]
+  deleted_FIR$Population <- names(all.boc)[i]
+  fir.sample[[i]] <- deleted_FIR
+}
+
+fir.sample <- as.data.frame(do.call(rbind, fir.sample))
+fir.sample <- merge(fir.sample, pitg.ann, by = "geneid")
+fir.sample <- fir.sample[!fir.sample$locus %in% "No_annotation",]
+fir.sample <- fir.sample[!fir.sample$locus %in% "pseudo",]
+#cols <- c("grey10","grey60","red","green","purple","orange")
+cols <- c("grey10","grey60","red","darkgreen","purple","darkorange1","blue","brown","pink")
+names(cols) <- unique(pitg.ann$locus)
+
+ test <- fir.plot + geom_point(data = fir.sample, aes(fiveprime,threeprime, color=locus),size=1) + facet_wrap( ~ Population)
+  test <- test + scale_y_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  test <- test + scale_x_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  test <- test + scale_color_manual(values = cols)
+  test <- test + labs(x = "5' distance (log bp)")
+  test <- test + labs(y = "3' distance (log bp)")
+  test <- test + theme_bw()
+  test <- test + theme(axis.text.x = element_text(angle = 90, hjust = 1), 
+                       strip.text.x = element_text(size = 8, colour = "white"))
+
+  test
+  
+  #ggsave(test, device = "pdf", width = 7.78, height = 2.77778, filename = "base_FIR_other.pdf")
+  #ggsave(test, device = "svg", width = 7.78, height = 2.77778, filename = "base_FIR.svg")
+  ggsave(test, device = "svg", width = 7.78, height = 2.77778, filename = "base_FIR_GeneFam.svg")
+```
+
+# Sample by sample
+
+```{r}
+names.boc <- list()
+for (i in 1:length(all.boc)){
+  names.boc[[i]] <- apply(all.boc[[i]], 2, function (x) names(x[x == 0]))
+  names.boc[[i]] <- lapply(names.boc[[i]], function (x) fir[fir$geneid %in% x,])
+  names(names.boc[[i]]) <- colnames(all.boc[[i]])
+}
+
+for (i in 1:length(names.boc)){
+  for (j in 1:length(names.boc[[i]])){
+    names.boc[[i]][[j]]$sample <- rep(x=names(names.boc[[i]])[j], nrow(names.boc[[i]][[j]]))
+  }
+}
+
+n.genes <- lapply(names.boc, function (x) as.data.frame(paste0("n=",unlist(lapply(x, nrow)))))
+n.genes <- lapply(n.genes, function (x) cbind(x, data.frame(5,5)))
+for (i in 1:length(n.genes)){
+  n.genes[[i]]$sample <- names(names.boc[[i]])
+  colnames(n.genes[[i]]) <- c("n","x","y","sample")
+}
+
+n.genes <- lapply(n.genes, function (x) x[c(1:6),])
+
+final.boc <- list()
+for (i in 1:length(names.boc)){
+ final.boc[[i]] <- do.call(rbind, names.boc[[i]])
+}
+
+
+final.boc <- lapply(final.boc, function (x) merge(x, pitg.ann, by = "geneid"))
+final.boc <- lapply(final.boc, function (x) x[!x$locus %in% "No_annotation",])
+final.boc <- lapply(final.boc, function (x) x[!x$locus %in% "pseudo",])
+names(final.boc) <- c("Mexico","South America", "US-1 lineage")
+```
+
+## Mexico
+
+```{r MX_all}
+multi.test <-  fir.plot + geom_point(data = final.boc[[1]][!final.boc[[1]]$sample %in% "PIC98372",], aes(fiveprime,threeprime, colour=locus),size=1)
+  multi.test <- multi.test + scale_color_manual(values = cols)
+  multi.test <- multi.test + facet_wrap( ~ sample, ncol = 2)
+  multi.test <- multi.test + scale_y_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  multi.test <- multi.test + scale_x_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  multi.test <- multi.test + labs(x = "5' distance (log bp)")
+  multi.test <- multi.test + labs(y = "3' distance (log bp)")
+  multi.test <- multi.test + geom_text(data = n.genes[[1]],aes(x=x, y=y, label=n), size=2)
+  multi.test <- multi.test + theme_bw()
+  multi.test <- multi.test + theme(
+          #strip.background = element_blank(), strip.text.x = element_blank(), 
+          axis.line=element_blank(),axis.text.x=element_blank(),
+          axis.text.y=element_blank(),axis.ticks=element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),legend.position="none",
+          strip.text.x = element_text(size = 8, colour = "white"))
+
+multi.test
+
+#ggsave(multi.test, device = "pdf", width = 2.442847222224, height = 3.248986111113, filename = "MX_multip.pdf")
+#ggsave(multi.test, device = "svg", width = 2.442847222224, height = 3.248986111113, filename = "MX_multip.svg")
+ggsave(multi.test, device = "svg", width = 2.442847222224, height = 3.248986111113, filename = "MX_multip_GeneFam.svg")
+```
+
+## South America
+
+```{r SA_all}
+multi.test <-  fir.plot + geom_point(data = final.boc[[2]][!final.boc[[2]]$sample %in% "P13626",], aes(fiveprime,threeprime,colour=locus), size=1)
+  multi.test <- multi.test + scale_color_manual(values = cols)
+  multi.test <- multi.test + facet_wrap( ~ sample, ncol = 2)
+  multi.test <- multi.test + scale_y_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  multi.test <- multi.test + scale_x_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  multi.test <- multi.test + labs(x = "5' distance (log bp)")
+  multi.test <- multi.test + labs(y = "3' distance (log bp)")
+  multi.test <- multi.test + geom_text(data = n.genes[[2]],aes(x=x, y=y, label=n), size=2)
+  multi.test <- multi.test + theme_bw()
+  multi.test <- multi.test + theme(
+          #strip.background = element_blank(), strip.text.x = element_blank(), 
+          axis.line=element_blank(),axis.text.x=element_blank(),
+          axis.text.y=element_blank(),axis.ticks=element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),legend.position="none",
+          strip.text.x = element_text(size = 8, colour = "white"),)
+
+multi.test
+#ggsave(multi.test, device = "pdf", width = 2.442847222224, height = 3.248986111113, filename = "SA_multip.pdf")
+#ggsave(multi.test, device = "svg", width = 2.442847222224, height = 3.248986111113, filename = "SA_multip.svg")
+ggsave(multi.test, device = "svg", width = 2.442847222224, height = 3.248986111113, filename = "SA_multip_GeneFam.svg")
+```
+
+## USA
+
+```{r US1_all}
+multi.test <-  fir.plot + geom_point(data = final.boc[[3]][!final.boc[[3]]$sample %in% "LBUS",], aes(fiveprime,threeprime, colour=locus),size=1)
+  multi.test <- multi.test + scale_color_manual(values = cols)
+  multi.test <- multi.test + facet_wrap( ~ sample, ncol = 2)
+  multi.test <- multi.test + scale_y_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  multi.test <- multi.test + scale_x_continuous(trans=scales::log_trans(), breaks=10^(1:5))
+  multi.test <- multi.test + labs(x = "5' distance (log bp)")
+  multi.test <- multi.test + labs(y = "3' distance (log bp)")
+  multi.test <- multi.test + geom_text(data = n.genes[[3]],aes(x=x, y=y, label=n), size=2)
+  multi.test <- multi.test + theme_bw()
+  multi.test <- multi.test + theme(
+          #strip.background = element_blank(), strip.text.x = element_blank(), 
+          axis.line=element_blank(),axis.text.x=element_blank(),
+          axis.text.y=element_blank(),axis.ticks=element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),legend.position="none",
+          strip.text.x = element_text(size = 8, colour = "white"))
+
+multi.test
+#ggsave(multi.test, device = "pdf", width = 2.442847222224, height = 3.248986111113, filename = "US1_multip.pdf")
+#ggsave(multi.test, device = "svg", width = 2.442847222224, height = 3.248986111113, filename = "US1_multip.svg")
+ggsave(multi.test, device = "svg", width = 2.442847222224, height = 3.248986111113, filename = "US1_multip_GeneFam.svg")
+```
+
+# Final figure
+
+Final version of figure 3 was edited in Adobe Illustrator CS6 to color the labels and position the figures to form the grids.
